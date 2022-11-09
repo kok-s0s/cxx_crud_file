@@ -239,3 +239,19 @@ TEST(iniFile_Test, getArrayDoubleFromIni) {
     EXPECT_EQ(array_double_testD[i], default_array_double[i]);
   }
 }
+
+TEST(iniFile_Test, setToIni) {
+  IniFile ini_test_02;
+  ini_test_02.path =
+      "D:\\work\\mobile_Ocean\\cxx_crud_file\\files_test\\ini_test_02.ini";
+
+  EXPECT_EQ(
+      ini_test_02.path,
+      "D:\\work\\mobile_Ocean\\cxx_crud_file\\files_test\\ini_test_02.ini");
+
+  EXPECT_EQ(fileTools.setToIni(ini_test_02, "string", "str1", "kok-s0s"), true);
+  EXPECT_EQ(fileTools.setToIni(ini_test_02, "int", "int1", 22), true);
+  EXPECT_EQ(fileTools.setToIni(ini_test_02, "float", "float1", 22.09f), true);
+  EXPECT_EQ(fileTools.setToIni(ini_test_02, "double", "double1", 22.09), true);
+  EXPECT_EQ(fileTools.setToIni(ini_test_02, "bool", "bool1", true), true);
+}

@@ -174,4 +174,91 @@ public:
 
     return true;
   };
+
+  bool setToIni(const IniFile &iniFile, const char *section, const char *key,
+                const char *fromValue) {
+    CSimpleIniA ini;
+    ini.SetUnicode();
+
+    const char *path = (char *)iniFile.path.c_str();
+
+    SI_Error rc = ini.LoadFile(path);
+    if (rc < 0) {
+      return false;
+    }
+
+    std::string toValue = fromValue;
+
+    const char *toValueC = (char *)toValue.c_str();
+
+    rc = ini.SetValue(section, key, toValueC);
+    if (rc < 0) {
+      return false;
+    }
+
+    std::string output;
+    ini.Save(output);
+    if (rc < 0) {
+      return false;
+    }
+
+    rc = ini.SaveFile(path);
+    if (rc < 0) {
+      return false;
+    }
+
+    return true;
+  };
+
+  template <typename T>
+  bool setToIni(const IniFile &iniFile, const char *section, const char *key,
+                T fromValue) {
+    CSimpleIniA ini;
+    ini.SetUnicode();
+
+    const char *path = (char *)iniFile.path.c_str();
+
+    SI_Error rc = ini.LoadFile(path);
+    if (rc < 0) {
+      return false;
+    }
+
+    const char *name = typeid(T).name();
+    std::string valueType = name;
+    std::string toValue;
+
+    if (valueType == "int") {
+      toValue = std::to_string(fromValue);
+    } else if (valueType == "float") {
+      toValue = std::to_string(fromValue);
+    } else if (valueType == "double") {
+      toValue = std::to_string(fromValue);
+    } else if (valueType == "bool") {
+      if (fromValue == false) {
+        toValue = "false";
+      } else if (fromValue == true) {
+        toValue = "true";
+      }
+    }
+
+    const char *toValueC = (char *)toValue.c_str();
+
+    rc = ini.SetValue(section, key, toValueC);
+    if (rc < 0) {
+      return false;
+    }
+
+    std::string output;
+    ini.Save(output);
+    if (rc < 0) {
+      return false;
+    }
+
+    rc = ini.SaveFile(path);
+    if (rc < 0) {
+      return false;
+    }
+
+    return true;
+  };
 };
