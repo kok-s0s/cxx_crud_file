@@ -255,3 +255,23 @@ TEST(iniFile_Test, setToIni) {
   EXPECT_EQ(fileTools.setToIni(ini_test_02, "double", "double1", 22.09), true);
   EXPECT_EQ(fileTools.setToIni(ini_test_02, "bool", "bool1", true), true);
 }
+
+TEST(iniFile_Test, setArrayToIni) {
+  IniFile ini_test_02;
+  ini_test_02.path =
+      "D:\\work\\mobile_Ocean\\cxx_crud_file\\files_test\\ini_test_02.ini";
+  int arr_int[] = {2, 3, 4, 5, 6, 1};
+  float arr_float[] = {1.01f, 2.01f, 3.01f};
+  double arr_double[] = {2.11, 3.11, 1.11};
+
+  EXPECT_EQ(
+      ini_test_02.path,
+      "D:\\work\\mobile_Ocean\\cxx_crud_file\\files_test\\ini_test_02.ini");
+
+  EXPECT_EQ(fileTools.setToIni(ini_test_02, "intArr", "iArr", arr_int, 6),
+            true);
+  EXPECT_EQ(fileTools.setToIni(ini_test_02, "floatArr", "fArr", arr_float, 3),
+            true);
+  EXPECT_EQ(fileTools.setToIni(ini_test_02, "doubleArr", "dArr", arr_double, 3),
+            true);
+}

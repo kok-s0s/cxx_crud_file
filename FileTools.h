@@ -261,4 +261,69 @@ public:
 
     return true;
   };
+
+  template <typename T>
+  bool setToIni(const IniFile &iniFile, const char *section, const char *key,
+                T *fromValueArr, const int &size) {
+    if (size <= 0) {
+      return false;
+    }
+
+    CSimpleIniA ini;
+    ini.SetUnicode();
+
+    const char *path = (char *)iniFile.path.c_str();
+
+    SI_Error rc = ini.LoadFile(path);
+    if (rc < 0) {
+      return false;
+    }
+
+    const char *name = typeid(T).name();
+    std::string valueType = name;
+    std::string toValueArr;
+
+    if (valueType == "int") {
+      for (int i = 0; i < size; ++i) {
+        toValueArr += std::to_string(fromValueArr[i]);
+        if (i != size - 1) {
+          toValueArr += ", ";
+        }
+      }
+    } else if (valueType == "float") {
+      for (int i = 0; i < size; ++i) {
+        toValueArr += std::to_string(fromValueArr[i]);
+        if (i != size - 1) {
+          toValueArr += ", ";
+        }
+      }
+    } else if (valueType == "double") {
+      for (int i = 0; i < size; ++i) {
+        toValueArr += std::to_string(fromValueArr[i]);
+        if (i != size - 1) {
+          toValueArr += ", ";
+        }
+      }
+    }
+
+    const char *toValueC = (char *)toValueArr.c_str();
+
+    rc = ini.SetValue(section, key, toValueC);
+    if (rc < 0) {
+      return false;
+    }
+
+    std::string output;
+    ini.Save(output);
+    if (rc < 0) {
+      return false;
+    }
+
+    rc = ini.SaveFile(path);
+    if (rc < 0) {
+      return false;
+    }
+
+    return true;
+  };
 };
