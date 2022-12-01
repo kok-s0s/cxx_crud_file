@@ -1,0 +1,14 @@
+{
+  "encoding": "UTF-8",
+  "int": 22,
+  "double": 22.22,
+  "bool": false,
+  "plug-ins": ["python", "c++", "ruby"],
+  "indent": {
+    "length": 3,
+    "use_space": true,
+    "g": "ekoko",
+    "int_arr": [1, 2, 3],
+    "double_arr": [1.11, 2.11, 3.11]
+  }
+}

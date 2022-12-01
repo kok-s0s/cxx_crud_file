@@ -1,11 +1,15 @@
-#include "pch.h"
+#include "FileTools.h"
+#include <gtest/gtest.h>
+#include <iostream>
 
 FileTools fileTools;
+
+#pragma region txtTest
 
 TEST(txtFile_Test, readTxtFileLine) {
   TxtFile txt_test_01;
   txt_test_01.path =
-      fileTools.get_current_directory() + "\\files_test\\test_01.txt";
+      fileTools.get_current_directory() + "/files_test/test_01.txt";
 
   EXPECT_EQ(fileTools.readTxtFileLine(txt_test_01), true);
   EXPECT_EQ(txt_test_01.data, "kok-s0s\ni like code.\n");
@@ -14,17 +18,21 @@ TEST(txtFile_Test, readTxtFileLine) {
 TEST(txtFile_Test, writeDataToTxtFile) {
   TxtFile txt_test_02;
   txt_test_02.path =
-      fileTools.get_current_directory() + "\\files_test\\test_02.txt";
+      fileTools.get_current_directory() + "/files_test/test_02.txt";
   std::string data = "hei\nare you ok?\n";
 
   EXPECT_EQ(fileTools.writeDataToTxtFile(txt_test_02, data), true);
   EXPECT_EQ(txt_test_02.data, "hei\nare you ok?\n");
 }
 
+#pragma endregion
+
+#pragma region iniTest
+
 TEST(iniFile_Test, getStringFromIni) {
   IniFile ini_test_01;
   ini_test_01.path =
-      fileTools.get_current_directory() + "\\files_test\\ini_test_01.ini";
+      fileTools.get_current_directory() + "/files_test/ini_test_01.ini";
   std::string str_value_01;
   std::string str_value_02;
   std::string str_value_03;
@@ -46,7 +54,7 @@ TEST(iniFile_Test, getStringFromIni) {
 TEST(iniFile_Test, getIntFromIni) {
   IniFile ini_test_01;
   ini_test_01.path =
-      fileTools.get_current_directory() + "\\files_test\\ini_test_01.ini";
+      fileTools.get_current_directory() + "/files_test/ini_test_01.ini";
   int int_value_01;
   int int_value_02;
   int int_value_03;
@@ -65,7 +73,7 @@ TEST(iniFile_Test, getIntFromIni) {
 TEST(iniFile_Test, getFloatFromIni) {
   IniFile ini_test_01;
   ini_test_01.path =
-      fileTools.get_current_directory() + "\\files_test\\ini_test_01.ini";
+      fileTools.get_current_directory() + "/files_test/ini_test_01.ini";
   float float_value_01;
   float float_value_02;
   float float_value_03;
@@ -87,7 +95,7 @@ TEST(iniFile_Test, getFloatFromIni) {
 TEST(iniFile_Test, getDoubleFromIni) {
   IniFile ini_test_01;
   ini_test_01.path =
-      fileTools.get_current_directory() + "\\files_test\\ini_test_01.ini";
+      fileTools.get_current_directory() + "/files_test/ini_test_01.ini";
   double double_value_01;
   double double_value_02;
   double double_value_03;
@@ -109,7 +117,7 @@ TEST(iniFile_Test, getDoubleFromIni) {
 TEST(iniFile_Test, getBoolFromIni) {
   IniFile ini_test_01;
   ini_test_01.path =
-      fileTools.get_current_directory() + "\\files_test\\ini_test_01.ini";
+      fileTools.get_current_directory() + "/files_test/ini_test_01.ini";
   bool bool_value_01;
   bool bool_value_02;
   bool bool_value_03;
@@ -131,7 +139,7 @@ TEST(iniFile_Test, getBoolFromIni) {
 TEST(iniFile_Test, getArrayIntFromIni) {
   IniFile ini_test_01;
   ini_test_01.path =
-      fileTools.get_current_directory() + "\\files_test\\ini_test_01.ini";
+      fileTools.get_current_directory() + "/files_test/ini_test_01.ini";
   int array_int[8];
   int array_int_testD[8];
   int default_array_int[] = {1, 2, 3, 4, 5, 6, 7, 8};
@@ -156,7 +164,7 @@ TEST(iniFile_Test, getArrayIntFromIni) {
 TEST(iniFile_Test, getArrayFloatFromIni) {
   IniFile ini_test_01;
   ini_test_01.path =
-      fileTools.get_current_directory() + "\\files_test\\ini_test_01.ini";
+      fileTools.get_current_directory() + "/files_test/ini_test_01.ini";
   float array_float[5];
   float array_float_testD[5];
   float default_array_float[] = {1.11f, 2.11f, 3.11f, 4.11f, 5.11f};
@@ -181,7 +189,7 @@ TEST(iniFile_Test, getArrayFloatFromIni) {
 TEST(iniFile_Test, getArrayDoubleFromIni) {
   IniFile ini_test_01;
   ini_test_01.path =
-      fileTools.get_current_directory() + "\\files_test\\ini_test_01.ini";
+      fileTools.get_current_directory() + "/files_test/ini_test_01.ini";
   double array_double[5];
   double array_double_testD[5];
   double default_array_double[] = {1.11, 2.11, 3.11, 4.11, 5.11};
@@ -207,7 +215,7 @@ TEST(iniFile_Test, getArrayDoubleFromIni) {
 TEST(iniFile_Test, setToIni) {
   IniFile ini_test_02;
   ini_test_02.path =
-      fileTools.get_current_directory() + "\\files_test\\ini_test_02.ini";
+      fileTools.get_current_directory() + "/files_test/ini_test_02.ini";
 
   EXPECT_EQ(fileTools.setToIni(ini_test_02, "string", "str1", "kok-s0s"), true);
   EXPECT_EQ(fileTools.setToIni(ini_test_02, "int", "int1", 22), true);
@@ -219,7 +227,7 @@ TEST(iniFile_Test, setToIni) {
 TEST(iniFile_Test, setArrayToIni) {
   IniFile ini_test_02;
   ini_test_02.path =
-      fileTools.get_current_directory() + "\\files_test\\ini_test_02.ini";
+      fileTools.get_current_directory() + "/files_test/ini_test_02.ini";
   int arr_int[] = {2, 3, 4, 5, 6, 1};
   float arr_float[] = {1.01f, 2.01f, 3.01f};
   double arr_double[] = {2.11, 3.11, 1.11};
@@ -231,3 +239,144 @@ TEST(iniFile_Test, setArrayToIni) {
   EXPECT_EQ(fileTools.setToIni(ini_test_02, "doubleArr", "dArr", arr_double, 3),
             true);
 }
+
+#pragma endregion
+
+#pragma region jsonTest
+
+TEST(jsonFile_Test, readDataFromJsonFile) {
+  JsonFile json_test_01;
+  json_test_01.path =
+      fileTools.get_current_directory() + "/files_test/json_test_01.json";
+
+  EXPECT_EQ(fileTools.readDataFromJsonFile(json_test_01), true);
+}
+
+TEST(jsonFile_Test, getFromJsonData) {
+  JsonFile json_test_01;
+  json_test_01.path =
+      fileTools.get_current_directory() + "/files_test/json_test_01.json";
+  std::string json_value_string;
+  int json_value_int;
+  double json_value_double;
+  bool json_value_bool;
+  int depth_json_value_int;
+  bool depth_json_value_bool;
+  std::string depth_json_value_string;
+
+  EXPECT_EQ(fileTools.readDataFromJsonFile(json_test_01), true);
+  fileTools.getFromJsonData(json_test_01, "encoding", json_value_string,
+                            "kkkkk");
+  fileTools.getFromJsonData(json_test_01, "int", json_value_int, 19);
+  fileTools.getFromJsonData(json_test_01, "double", json_value_double, 19.22);
+  fileTools.getFromJsonData(json_test_01, "bool", json_value_bool, true);
+  fileTools.getFromJsonData(json_test_01, "indent.length", depth_json_value_int,
+                            19);
+  fileTools.getFromJsonData(json_test_01, "indent.use_space",
+                            depth_json_value_bool, false);
+  fileTools.getFromJsonData(json_test_01, "indent.g", depth_json_value_string,
+                            "bbbbb");
+
+  EXPECT_EQ(json_value_string, "UTF-8");
+  EXPECT_EQ(json_value_int, 22);
+  EXPECT_EQ(json_value_double, 22.22);
+  EXPECT_EQ(json_value_bool, false);
+  EXPECT_EQ(depth_json_value_int, 3);
+  EXPECT_EQ(depth_json_value_bool, true);
+  EXPECT_EQ(depth_json_value_string, "ekoko");
+}
+
+TEST(jsonFile_Test, getStringArrFromJsonData) {
+  JsonFile json_test_01;
+  json_test_01.path =
+      fileTools.get_current_directory() + "/files_test/json_test_01.json";
+  std::string json_value[3];
+  std::string json_target_value[] = {"python", "c++", "ruby"};
+  std::string json_default_value[] = {"java", "c#", "php"};
+  int size = 3;
+
+  EXPECT_EQ(fileTools.readDataFromJsonFile(json_test_01), true);
+  fileTools.getFromJsonData(json_test_01, "plug-ins", json_value,
+                            json_default_value, size);
+
+  for (int i = 0; i < size; ++i) {
+    EXPECT_EQ(json_value[i], json_target_value[i]);
+  }
+}
+
+TEST(jsonFile_Test, getIntArrFromJsonData) {
+  JsonFile json_test_01;
+  json_test_01.path =
+      fileTools.get_current_directory() + "/files_test/json_test_01.json";
+  int json_value[3];
+  int json_target_value[] = {1, 2, 3};
+  int json_default_value[] = {3, 2, 1};
+  int size = 3;
+
+  EXPECT_EQ(fileTools.readDataFromJsonFile(json_test_01), true);
+  fileTools.getFromJsonData(json_test_01, "indent.int_arr", json_value,
+                            json_default_value, size);
+
+  for (int i = 0; i < size; ++i) {
+    EXPECT_EQ(json_value[i], json_target_value[i]);
+  }
+}
+
+TEST(jsonFile_Test, getDoubleArrFromJsonData) {
+  JsonFile json_test_01;
+  json_test_01.path =
+      fileTools.get_current_directory() + "/files_test/json_test_01.json";
+  double json_value[3];
+  double json_target_value[] = {1.11, 2.11, 3.11};
+  double json_default_value[] = {3.11, 2.11, 1.11};
+  int size = 3;
+
+  EXPECT_EQ(fileTools.readDataFromJsonFile(json_test_01), true);
+  fileTools.getFromJsonData(json_test_01, "indent.double_arr", json_value,
+                            json_default_value, size);
+
+  for (int i = 0; i < size; ++i) {
+    EXPECT_EQ(json_value[i], json_target_value[i]);
+  }
+}
+
+#pragma endregion
+
+#pragma region dat
+
+TEST(datFile_Test, readDatFile) {
+  DatFile dat_test;
+  dat_test.path =
+      fileTools.get_current_directory() + "/files_test/dat_test.dat";
+
+  EXPECT_EQ(fileTools.readDatFile(dat_test), true);
+}
+
+TEST(datFile_Test, readDatFileToPtr) {
+  DatFile dat_test;
+  dat_test.path =
+      fileTools.get_current_directory() + "/files_test/dat_test.dat";
+
+  long dataSize = 8192;
+  int num = dataSize / sizeof(char);
+  char *variable = (char *)malloc(sizeof(char) * num);
+
+  if (fileTools.readDatFile(dat_test, variable, num)) {
+    EXPECT_EQ((int)variable[0], -87);
+  }
+}
+
+TEST(datFile_Test, writeDataToDatFile) {
+  DatFile dat_test;
+  dat_test.path =
+      fileTools.get_current_directory() + "/files_test/dat_test.dat";
+
+  if (fileTools.readDatFile(dat_test)) {
+    DatFile dat_test_copy = dat_test;
+    dat_test_copy.path =
+        fileTools.get_current_directory() + "/files_test/dat_test_copy.dat";
+    EXPECT_EQ(fileTools.writeDataToDatFile(dat_test_copy), true);
+  }
+}
+
+#pragma endregion

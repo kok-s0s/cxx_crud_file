@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.14)
 project(crud VERSION 0.1.0)
 
+# GoogleTest requires at least C++14
 set(CMAKE_CXX_STANDARD 20)
 
 include(FetchContent)
@@ -14,7 +15,7 @@ FetchContent_MakeAvailable(googletest)
 
 enable_testing()
 
-add_executable(crud crud_test.cpp)
+add_executable(crud main.cpp json/jsoncpp.cpp)
 
 target_link_libraries(
   crud
