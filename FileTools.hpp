@@ -7,65 +7,69 @@
 #endif
 
 #include "ini/SimpleIni.h"
-#include "json/json.h"
+#include "json/json.hpp"
 #include <fstream>
 #include <iostream>
 #include <sstream>
 #include <string>
 #include <vector>
 
+using std::fstream;
+using std::ios;
+using std::string;
+using std::to_string;
+using std::vector;
+
+using json = nlohmann::json;
+
 struct TxtFile {
-  std::string path;
-  std::string data = "";
+  string path;
+  string data = "";
 };
 
 struct IniFile {
-  std::string path;
+  string path;
 };
 
 struct JsonFile {
-  std::string path;
-  Json::Value data;
+  string path;
+  json data;
 };
 
 struct DatFile {
-  std::string path;
-  std::vector<char> data;
+  string path;
+  vector<char> data;
 };
 
 class FileTools {
 private:
-  std::vector<std::string> split(const std::string &data,
-                                 const std::string &separator) {
-    std::vector<std::string> result;
+  vector<string> split(const string &data, const string &separator) {
+    vector<string> result;
     if (data == "") {
       return result;
     }
 
-#if defined(_MSC_VER)
     char *thisStr = new char[data.length() + 1];
-    strcpy_s(thisStr, data.length() + 1, data.c_str());
-
     char *thisSeparator = new char[separator.length() + 1];
+
+#if defined(_MSC_VER)
+    strcpy_s(thisStr, data.length() + 1, data.c_str());
     strcpy_s(thisSeparator, separator.length() + 1, separator.c_str());
 
     char *next_token = NULL;
     char *token = strtok_s(thisStr, thisSeparator, &next_token);
     while (token) {
-      std::string tempStr = token;
+      string tempStr = token;
       result.push_back(tempStr);
       token = strtok_s(NULL, thisSeparator, &next_token);
     }
 #elif defined(__GNUC__)
-    char *thisStr = new char[data.length() + 1];
     strcpy(thisStr, data.c_str());
-
-    char *thisSeparator = new char[separator.length() + 1];
     strcpy(thisSeparator, separator.c_str());
 
     char *token = strtok(thisStr, thisSeparator);
     while (token) {
-      std::string tempStr = token;
+      string tempStr = token;
       result.push_back(tempStr);
       token = strtok(NULL, thisSeparator);
     }
@@ -75,23 +79,23 @@ private:
   }
 
 public:
-  std::string get_current_directory() {
+  string get_current_directory() {
     char buff[250];
     char *temp = GetCurrentDir(buff, 250);
-    std::string current_working_directory(buff);
+    string current_working_directory(buff);
     return current_working_directory;
   }
 
 #pragma region txt
 
   bool readTxtFileLine(TxtFile &txtFile) {
-    std::string ln;
-    std::fstream file;
+    string ln;
+    fstream file;
 
-    file.open(txtFile.path, std::ios::in);
+    file.open(txtFile.path, ios::in);
 
     if (file.is_open()) {
-      while (std::getline(file, ln))
+      while (getline(file, ln))
         txtFile.data += (ln + "\n");
 
       file.close();
@@ -99,12 +103,12 @@ public:
       return true;
     } else
       return false;
-  };
+  }
 
-  bool writeDataToTxtFile(TxtFile &txtFile, std::string data) {
-    std::fstream file;
+  bool writeDataToTxtFile(TxtFile &txtFile, string data) {
+    fstream file;
 
-    file.open(txtFile.path, std::ios::out);
+    file.open(txtFile.path, ios::out);
 
     if (file.is_open()) {
       file << data;
@@ -115,14 +119,14 @@ public:
       return true;
     } else
       return false;
-  };
+  }
 
 #pragma endregion
 
 #pragma region ini
 
   bool getFromIni(const IniFile &iniFile, const char *section, const char *key,
-                  std::string &param, const char *defaultVal) {
+                  string &param, const char *defaultVal) {
     CSimpleIniA ini;
     ini.SetUnicode();
 
@@ -135,7 +139,7 @@ public:
     param = ini.GetValue(section, key, defaultVal);
 
     return true;
-  };
+  }
 
   template <typename T>
   bool getFromIni(const IniFile &iniFile, const char *section, const char *key,
@@ -150,16 +154,16 @@ public:
       return false;
 
     const char *name = typeid(T).name();
-    std::string paramType = name;
-    std::string tempParam;
-    tempParam = ini.GetValue(section, key, std::to_string(defaultVal).c_str());
+    string paramType = name;
+    string tempParam;
+    tempParam = ini.GetValue(section, key, to_string(defaultVal).c_str());
 
     if (paramType[0] == 'i')
-      param = std::stoi(tempParam);
+      param = stoi(tempParam);
     else if (paramType[0] == 'f')
-      param = std::stof(tempParam);
+      param = stof(tempParam);
     else if (paramType[0] == 'd')
-      param = std::stod(tempParam);
+      param = stod(tempParam);
     else if (paramType[0] == 'b')
       if (tempParam == "false" || tempParam == "0") {
         param = false;
@@ -168,7 +172,7 @@ public:
       }
 
     return true;
-  };
+  }
 
   template <typename T>
   bool getFromIni(const IniFile &iniFile, const char *section, const char *key,
@@ -185,7 +189,7 @@ public:
     int index = 0;
 
     const char *name = typeid(T).name();
-    std::string paramType = name;
+    string paramType = name;
 
     if (ini.GetValue(section, key) == nullptr)
       while (index <= size - 1) {
@@ -193,21 +197,20 @@ public:
         index++;
       }
     else {
-      std::string tempParamArrayStr = ini.GetValue(section, key);
-      std::vector<std::string> tempParamArray =
-          split(tempParamArrayStr, " ,\t\n");
+      string tempParamArrayStr = ini.GetValue(section, key);
+      vector<string> tempParamArray = split(tempParamArrayStr, " ,\t\n");
 
       if (paramType[0] == 'i')
         for (int i = 0; i < tempParamArray.size(); ++i) {
-          param[index++] = std::stoi(tempParamArray[i]);
+          param[index++] = stoi(tempParamArray[i]);
         }
       else if (paramType[0] == 'f')
         for (int i = 0; i < tempParamArray.size(); ++i) {
-          param[index++] = std::stof(tempParamArray[i]);
+          param[index++] = stof(tempParamArray[i]);
         }
       else if (paramType[0] == 'd')
         for (int i = 0; i < tempParamArray.size(); ++i) {
-          param[index++] = std::stod(tempParamArray[i]);
+          param[index++] = stod(tempParamArray[i]);
         }
 
       while (index <= size - 1) {
@@ -217,7 +220,7 @@ public:
     }
 
     return true;
-  };
+  }
 
   bool setToIni(const IniFile &iniFile, const char *section, const char *key,
                 const char *fromValue) {
@@ -230,14 +233,14 @@ public:
     if (rc < 0)
       return false;
 
-    std::string toValue = fromValue;
+    string toValue = fromValue;
     const char *toValueC = (char *)toValue.c_str();
 
     rc = ini.SetValue(section, key, toValueC);
     if (rc < 0)
       return false;
 
-    std::string output;
+    string output;
     ini.Save(output);
 
     rc = ini.SaveFile(path);
@@ -245,7 +248,7 @@ public:
       return false;
 
     return true;
-  };
+  }
 
   template <typename T>
   bool setToIni(const IniFile &iniFile, const char *section, const char *key,
@@ -260,15 +263,15 @@ public:
       return false;
 
     const char *name = typeid(T).name();
-    std::string valueType = name;
-    std::string toValue;
+    string valueType = name;
+    string toValue;
 
     if (valueType[0] == 'i')
-      toValue = std::to_string(fromValue);
+      toValue = to_string(fromValue);
     else if (valueType[0] == 'f')
-      toValue = std::to_string(fromValue);
+      toValue = to_string(fromValue);
     else if (valueType[0] == 'd')
-      toValue = std::to_string(fromValue);
+      toValue = to_string(fromValue);
     else if (valueType[0] == 'b')
       if (fromValue == false) {
         toValue = "false";
@@ -282,7 +285,7 @@ public:
     if (rc < 0)
       return false;
 
-    std::string output;
+    string output;
     ini.Save(output);
 
     rc = ini.SaveFile(path);
@@ -290,7 +293,7 @@ public:
       return false;
 
     return true;
-  };
+  }
 
   template <typename T>
   bool setToIni(const IniFile &iniFile, const char *section, const char *key,
@@ -308,26 +311,26 @@ public:
       return false;
 
     const char *name = typeid(T).name();
-    std::string valueType = name;
-    std::string toValueArr;
+    string valueType = name;
+    string toValueArr;
 
     if (valueType[0] == 'i')
       for (int i = 0; i < size; ++i) {
-        toValueArr += std::to_string(fromValueArr[i]);
+        toValueArr += to_string(fromValueArr[i]);
         if (i != size - 1) {
           toValueArr += ", ";
         }
       }
     else if (valueType[0] == 'f')
       for (int i = 0; i < size; ++i) {
-        toValueArr += std::to_string(fromValueArr[i]);
+        toValueArr += to_string(fromValueArr[i]);
         if (i != size - 1) {
           toValueArr += ", ";
         }
       }
     else if (valueType[0] == 'd')
       for (int i = 0; i < size; ++i) {
-        toValueArr += std::to_string(fromValueArr[i]);
+        toValueArr += to_string(fromValueArr[i]);
         if (i != size - 1) {
           toValueArr += ", ";
         }
@@ -339,7 +342,7 @@ public:
     if (rc < 0)
       return false;
 
-    std::string output;
+    string output;
     ini.Save(output);
 
     rc = ini.SaveFile(path);
@@ -347,33 +350,19 @@ public:
       return false;
 
     return true;
-  };
+  }
 
 #pragma endregion
 
 #pragma region json
 
   bool readDataFromJsonFile(JsonFile &jsonFile) {
-    std::fstream file;
+    fstream file;
 
-    file.open(jsonFile.path, std::ios::in);
+    file.open(jsonFile.path, ios::in);
 
     if (file.is_open()) {
-      Json::CharReaderBuilder ReaderBuilder;
-      ReaderBuilder["emitUTF8"] = true;
-
-      Json::Value root;
-
-      std::string strerr;
-
-      bool flag = Json::parseFromStream(ReaderBuilder, file, &root, &strerr);
-
-      if (!flag) {
-        std::cout << strerr << std::endl;
-        return false;
-      }
-
-      jsonFile.data = root;
+      file >> jsonFile.data;
 
       file.close();
 
@@ -382,81 +371,73 @@ public:
       return false;
   }
 
-  void getFromJsonData(const JsonFile &jsonFile, const std::string &key,
-                       std::string &param, std::string defaultVal) {
-    Json::Value temp = jsonFile.data;
-    std::vector<std::string> keyArr = split(key, ".");
+  void getFromJsonData(const JsonFile &jsonFile, const string &key,
+                       string &param, string defaultVal) {
+    json temp = jsonFile.data;
+    vector<string> keyArr = split(key, ".");
 
     for (int i = 0; i < keyArr.size() - 1; ++i)
-      temp = temp[keyArr[i]];
+      temp = temp.at(keyArr[i]);
 
-    param = temp.get(keyArr[keyArr.size() - 1], defaultVal).asString();
+    if (temp.contains(keyArr[keyArr.size() - 1]))
+      param = temp.at(keyArr[keyArr.size() - 1]);
+    else
+      param = defaultVal;
   }
 
   template <typename T>
-  void getFromJsonData(const JsonFile &jsonFile, const std::string &key,
-                       T &param, T defaultVal) {
-    Json::Value temp = jsonFile.data;
-    std::vector<std::string> keyArr = split(key, ".");
-    const char *name = typeid(T).name();
-    std::string valueType = name;
+  void getFromJsonData(const JsonFile &jsonFile, const string &key, T &param,
+                       T defaultVal) {
+    json temp = jsonFile.data;
+    vector<string> keyArr = split(key, ".");
 
     for (int i = 0; i < keyArr.size() - 1; ++i)
-      temp = temp[keyArr[i]];
+      temp = temp.at(keyArr[i]);
 
-    if (valueType[0] == 'i')
-      param = temp.get(keyArr[keyArr.size() - 1], defaultVal).asInt();
-    else if (valueType[0] == 'd')
-      param = temp.get(keyArr[keyArr.size() - 1], defaultVal).asDouble();
-    else if (valueType[0] == 'b')
-      param = temp.get(keyArr[keyArr.size() - 1], defaultVal).asBool();
+    if (temp.contains(keyArr[keyArr.size() - 1]))
+      param = temp.at(keyArr[keyArr.size() - 1]);
+    else
+      param = defaultVal;
   }
 
-  void getFromJsonData(const JsonFile &jsonFile, const std::string &key,
-                       std::string *param, std::string *defaultVal,
-                       const int &size) {
-    Json::Value temp = jsonFile.data;
-    std::vector<std::string> keyArr = split(key, ".");
+  void getFromJsonData(const JsonFile &jsonFile, const string &key,
+                       string *param, string *defaultVal, const int &size) {
+    json temp = jsonFile.data;
+    vector<string> keyArr = split(key, ".");
 
     for (int i = 0; i < keyArr.size() - 1; ++i)
-      temp = temp[keyArr[i]];
+      temp = temp.at(keyArr[i]);
 
-    const Json::Value thisKeyArrData = temp[keyArr[keyArr.size() - 1]];
+    const json thisKeyArrValue = temp.at(keyArr[keyArr.size() - 1]);
     int index = 0;
 
-    for (int i = 0; i < thisKeyArrData.size(); ++i)
-      param[index++] = thisKeyArrData[index].asString();
+    for (int i = 0; i < thisKeyArrValue.size(); ++i) {
+      param[index++] = thisKeyArrValue[index];
 
-    if (index < size) {
-      for (int i = index; i < size; ++i)
-        param[i] = defaultVal[i];
+      if (index < size)
+        for (int i = index; i < size; ++i)
+          param[i] = defaultVal[i];
     }
   }
 
   template <typename T>
-  void getFromJsonData(const JsonFile &jsonFile, const std::string &key,
-                       T *param, T *defaultVal, const int &size) {
-    Json::Value temp = jsonFile.data;
-    std::vector<std::string> keyArr = split(key, ".");
-    const char *name = typeid(T).name();
-    std::string valueType = name;
+  void getFromJsonData(const JsonFile &jsonFile, const string &key, T *param,
+                       T *defaultVal, const int &size) {
+    json temp = jsonFile.data;
+    vector<string> keyArr = split(key, ".");
 
     for (int i = 0; i < keyArr.size() - 1; ++i)
-      temp = temp[keyArr[i]];
+      temp = temp.at(keyArr[i]);
 
-    const Json::Value thisKeyArrData = temp[keyArr[keyArr.size() - 1]];
+    const json thisKeyArrValue = temp.at(keyArr[keyArr.size() - 1]);
     int index = 0;
 
-    if (valueType[0] == 'i')
-      for (int i = 0; i < thisKeyArrData.size(); ++i)
-        param[index++] = thisKeyArrData[index].asInt();
-    else if (valueType[0] == 'd')
-      for (int i = 0; i < thisKeyArrData.size(); ++i)
-        param[index++] = thisKeyArrData[index].asDouble();
+    for (int i = 0; i < thisKeyArrValue.size(); ++i) {
+      param[index++] = thisKeyArrValue[index];
 
-    if (index < size) {
-      for (int i = index; i < size; ++i)
-        param[i] = defaultVal[i];
+      if (index < size)
+        for (int i = index; i < size; ++i)
+          param[i] = defaultVal[i];
     }
   }
 
@@ -491,7 +472,7 @@ public:
     fclose(fid);
 
     return true;
-  };
+  }
 
   bool readDatFile(DatFile &datFile, char *varibale, const int &num) {
     FILE *fid = fopen(datFile.path.c_str(), "rb");
@@ -513,7 +494,7 @@ public:
     fclose(fid);
 
     return true;
-  };
+  }
 
   bool writeDataToDatFile(const DatFile &datFile) {
     FILE *fid = fopen(datFile.path.c_str(), "wb");
@@ -529,7 +510,7 @@ public:
     fclose(fid);
 
     return true;
-  };
+  }
 
 #pragma endregion
 };
