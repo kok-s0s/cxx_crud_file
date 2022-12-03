@@ -4,6 +4,20 @@
 
 FileTools fileTools;
 
+#pragma region path
+
+TEST(path_Test, mergePathArgs) {
+  string arg_01 = "C:";
+  string arg_02 = "home";
+  string arg_03 = "kok-s0s";
+
+  EXPECT_EQ(fileTools.mergePathArgs(arg_01, arg_02, arg_03,
+                                    "cxx_curd_file_unix", "main.cpp"),
+            "C:/home/kok-s0s/cxx_curd_file_unix/main.cpp");
+}
+
+#pragma endregion
+
 #pragma region txtTest
 
 TEST(txtFile_Test, readTxtFileLine) {
