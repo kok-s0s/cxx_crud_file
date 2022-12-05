@@ -30,6 +30,7 @@ struct TxtFile {
 
 struct IniFile {
   string path;
+  CSimpleIniA ini;
 };
 
 struct JsonFile {
@@ -160,38 +161,31 @@ public:
 
 #pragma region ini
 
-  bool getFromIni(const IniFile &iniFile, const char *section, const char *key,
-                  string &param, const char *defaultVal) {
-    CSimpleIniA ini;
-    ini.SetUnicode();
+  bool iniSetup(IniFile &iniFile) {
+    iniFile.ini.SetUnicode();
 
     const char *path = (char *)iniFile.path.c_str();
 
-    SI_Error rc = ini.LoadFile(path);
+    SI_Error rc = iniFile.ini.LoadFile(path);
     if (rc < 0)
       return false;
-
-    param = ini.GetValue(section, key, defaultVal);
 
     return true;
   }
 
+  void getFromIni(const IniFile &iniFile, const char *section, const char *key,
+                  string &param, const char *defaultVal) {
+    param = iniFile.ini.GetValue(section, key, defaultVal);
+  }
+
   template <typename T>
-  bool getFromIni(const IniFile &iniFile, const char *section, const char *key,
+  void getFromIni(const IniFile &iniFile, const char *section, const char *key,
                   T &param, T defaultVal) {
-    CSimpleIniA ini;
-    ini.SetUnicode();
-
-    const char *path = (char *)iniFile.path.c_str();
-
-    SI_Error rc = ini.LoadFile(path);
-    if (rc < 0)
-      return false;
-
     const char *name = typeid(T).name();
     string paramType = name;
     string tempParam;
-    tempParam = ini.GetValue(section, key, to_string(defaultVal).c_str());
+    tempParam =
+        iniFile.ini.GetValue(section, key, to_string(defaultVal).c_str());
 
     if (paramType[0] == 'i')
       param = stoi(tempParam);
@@ -205,34 +199,23 @@ public:
       } else if (tempParam == "true" || tempParam == "1") {
         param = true;
       }
-
-    return true;
   }
 
   template <typename T>
-  bool getFromIni(const IniFile &iniFile, const char *section, const char *key,
+  void getFromIni(const IniFile &iniFile, const char *section, const char *key,
                   T *param, T *defaultVal, const int &size) {
-    CSimpleIniA ini;
-    ini.SetUnicode();
-
-    const char *path = (char *)iniFile.path.c_str();
-
-    SI_Error rc = ini.LoadFile(path);
-    if (rc < 0)
-      return false;
-
     int index = 0;
 
     const char *name = typeid(T).name();
     string paramType = name;
 
-    if (ini.GetValue(section, key) == nullptr)
+    if (iniFile.ini.GetValue(section, key) == nullptr)
       while (index <= size - 1) {
         param[index] = defaultVal[index];
         index++;
       }
     else {
-      string tempParamArrayStr = ini.GetValue(section, key);
+      string tempParamArrayStr = iniFile.ini.GetValue(section, key);
       vector<string> tempParamArray = split(tempParamArrayStr, " ,\t\n");
 
       if (paramType[0] == 'i')
@@ -253,50 +236,18 @@ public:
         index++;
       }
     }
-
-    return true;
   }
 
-  bool setToIni(const IniFile &iniFile, const char *section, const char *key,
+  void setToIni(IniFile &iniFile, const char *section, const char *key,
                 const char *fromValue) {
-    CSimpleIniA ini;
-    ini.SetUnicode();
-
-    const char *path = (char *)iniFile.path.c_str();
-
-    SI_Error rc = ini.LoadFile(path);
-    if (rc < 0)
-      return false;
-
     string toValue = fromValue;
     const char *toValueC = (char *)toValue.c_str();
-
-    rc = ini.SetValue(section, key, toValueC);
-    if (rc < 0)
-      return false;
-
-    string output;
-    ini.Save(output);
-
-    rc = ini.SaveFile(path);
-    if (rc < 0)
-      return false;
-
-    return true;
+    iniFile.ini.SetValue(section, key, toValueC);
   }
 
   template <typename T>
-  bool setToIni(const IniFile &iniFile, const char *section, const char *key,
+  void setToIni(IniFile &iniFile, const char *section, const char *key,
                 T fromValue) {
-    CSimpleIniA ini;
-    ini.SetUnicode();
-
-    const char *path = (char *)iniFile.path.c_str();
-
-    SI_Error rc = ini.LoadFile(path);
-    if (rc < 0)
-      return false;
-
     const char *name = typeid(T).name();
     string valueType = name;
     string toValue;
@@ -316,34 +267,14 @@ public:
 
     const char *toValueC = (char *)toValue.c_str();
 
-    rc = ini.SetValue(section, key, toValueC);
-    if (rc < 0)
-      return false;
-
-    string output;
-    ini.Save(output);
-
-    rc = ini.SaveFile(path);
-    if (rc < 0)
-      return false;
-
-    return true;
+    iniFile.ini.SetValue(section, key, toValueC);
   }
 
   template <typename T>
-  bool setToIni(const IniFile &iniFile, const char *section, const char *key,
+  void setToIni(IniFile &iniFile, const char *section, const char *key,
                 T *fromValueArr, const int &size) {
     if (size <= 0)
-      return false;
-
-    CSimpleIniA ini;
-    ini.SetUnicode();
-
-    const char *path = (char *)iniFile.path.c_str();
-
-    SI_Error rc = ini.LoadFile(path);
-    if (rc < 0)
-      return false;
+      return;
 
     const char *name = typeid(T).name();
     string valueType = name;
@@ -373,18 +304,7 @@ public:
 
     const char *toValueC = (char *)toValueArr.c_str();
 
-    rc = ini.SetValue(section, key, toValueC);
-    if (rc < 0)
-      return false;
-
-    string output;
-    ini.Save(output);
-
-    rc = ini.SaveFile(path);
-    if (rc < 0)
-      return false;
-
-    return true;
+    iniFile.ini.SetValue(section, key, toValueC);
   }
 
 #pragma endregion

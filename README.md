@@ -40,28 +40,31 @@ Based On `simpleini` --- [Github](https://github.com/brofield/simpleini)
 ```cxx
 struct IniFile {
   string path;
+  CSimpleIniA ini;
 };
 
-bool getFromIni(const IniFile &iniFile, const char *section, const char *key,
+bool iniSetup(IniFile &iniFile);
+
+void getFromIni(const IniFile &iniFile, const char *section, const char *key,
                 string &param, const char *defaultVal);
 
 template <typename T>
-bool getFromIni(const IniFile &iniFile, const char *section, const char *key,
+void getFromIni(const IniFile &iniFile, const char *section, const char *key,
                 T &param, T defaultVal);
 
 template <typename T>
-bool getFromIni(const IniFile &iniFile, const char *section, const char *key,
+void getFromIni(const IniFile &iniFile, const char *section, const char *key,
                 T *param, T *defaultVal, const int &size);
 
-bool setToIni(const IniFile &iniFile, const char *section, const char *key,
+void setToIni(IniFile &iniFile, const char *section, const char *key,
               const char *fromValue);
 
 template <typename T>
-bool setToIni(const IniFile &iniFile, const char *section, const char *key,
+void setToIni(IniFile &iniFile, const char *section, const char *key,
               T fromValue);
 
 template <typename T>
-bool setToIni(const IniFile &iniFile, const char *section, const char *key,
+void setToIni(IniFile &iniFile, const char *section, const char *key,
               T *fromValueArr, const int &size);
 ```
 
