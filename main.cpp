@@ -16,6 +16,16 @@ TEST(path_Test, mergePathArgs) {
             "C:/home/kok-s0s/cxx_curd_file_unix/main.cpp");
 }
 
+TEST(path_Test, pathExistFlag) {
+  string path_01 =
+      fileTools.get_current_directory() + "/files_test/test_01.txt";
+  string path_02 =
+      fileTools.get_current_directory() + "/files_test/test_10.txt";
+
+  EXPECT_EQ(fileTools.pathExistFlag(path_01), true);
+  EXPECT_EQ(fileTools.pathExistFlag(path_02), false);
+}
+
 #pragma endregion
 
 #pragma region txtTest

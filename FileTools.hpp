@@ -12,6 +12,7 @@
 #include <iostream>
 #include <sstream>
 #include <string>
+#include <sys/stat.h>
 #include <vector>
 
 using std::fstream;
@@ -79,6 +80,8 @@ private:
   }
 
 public:
+#pragma region path
+
   string get_current_directory() {
     char buff[250];
     char *temp = GetCurrentDir(buff, 250);
@@ -110,6 +113,13 @@ public:
       path.pop_back();
     return path;
   }
+
+  bool pathExistFlag(const string &path) {
+    struct stat buffer;
+    return (stat(path.c_str(), &buffer) == 0);
+  }
+
+#pragma endregion
 
 #pragma region txt
 
