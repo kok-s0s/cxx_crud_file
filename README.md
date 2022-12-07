@@ -20,6 +20,22 @@
 
 ## Function
 
+### path
+
+```cxx
+string get_current_directory();
+
+string mergePathArgs(string arg);
+
+string mergePathArgs(const char *arg);
+
+template <typename... T> string mergePathArgs(string &arg, T &... args);
+
+template <typename... T> string mergePathArgs(const char *arg, T &... args);
+
+bool pathExistFlag(const string &path);
+```
+
 ### txt
 
 ```cxx

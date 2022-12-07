@@ -332,7 +332,8 @@ public:
     vector<string> keyArr = split(key, ".");
 
     for (int i = 0; i < keyArr.size() - 1; ++i)
-      temp = temp.at(keyArr[i]);
+      if (temp.contains(keyArr[i]))
+        temp = temp.at(keyArr[i]);
 
     if (temp.contains(keyArr[keyArr.size() - 1]))
       param = temp.at(keyArr[keyArr.size() - 1]);
@@ -347,7 +348,8 @@ public:
     vector<string> keyArr = split(key, ".");
 
     for (int i = 0; i < keyArr.size() - 1; ++i)
-      temp = temp.at(keyArr[i]);
+      if (temp.contains(keyArr[i]))
+        temp = temp.at(keyArr[i]);
 
     if (temp.contains(keyArr[keyArr.size() - 1]))
       param = temp.at(keyArr[keyArr.size() - 1]);
@@ -361,18 +363,21 @@ public:
     vector<string> keyArr = split(key, ".");
 
     for (int i = 0; i < keyArr.size() - 1; ++i)
-      temp = temp.at(keyArr[i]);
+      if (temp.contains(keyArr[i]))
+        temp = temp.at(keyArr[i]);
 
-    const json thisKeyArrValue = temp.at(keyArr[keyArr.size() - 1]);
     int index = 0;
 
-    for (int i = 0; i < thisKeyArrValue.size(); ++i) {
-      param[index++] = thisKeyArrValue[index];
+    if (temp.contains(keyArr[keyArr.size() - 1])) {
+      const json thisKeyArrValue = temp.at(keyArr[keyArr.size() - 1]);
 
-      if (index < size)
-        for (int i = index; i < size; ++i)
-          param[i] = defaultVal[i];
+      for (int i = 0; i < thisKeyArrValue.size(); ++i)
+        param[index++] = thisKeyArrValue[index];
     }
+
+    if (index < size)
+      for (int i = index; i < size; ++i)
+        param[i] = defaultVal[i];
   }
 
   template <typename T>
@@ -382,18 +387,21 @@ public:
     vector<string> keyArr = split(key, ".");
 
     for (int i = 0; i < keyArr.size() - 1; ++i)
-      temp = temp.at(keyArr[i]);
+      if (temp.contains(keyArr[i]))
+        temp = temp.at(keyArr[i]);
 
-    const json thisKeyArrValue = temp.at(keyArr[keyArr.size() - 1]);
     int index = 0;
 
-    for (int i = 0; i < thisKeyArrValue.size(); ++i) {
-      param[index++] = thisKeyArrValue[index];
+    if (temp.contains(keyArr[keyArr.size() - 1])) {
+      const json thisKeyArrValue = temp.at(keyArr[keyArr.size() - 1]);
 
-      if (index < size)
-        for (int i = index; i < size; ++i)
-          param[i] = defaultVal[i];
+      for (int i = 0; i < thisKeyArrValue.size(); ++i)
+        param[index++] = thisKeyArrValue[index];
     }
+
+    if (index < size)
+      for (int i = index; i < size; ++i)
+        param[i] = defaultVal[i];
   }
 
 #pragma endregion
