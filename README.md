@@ -125,3 +125,13 @@ bool readDatFile(DatFile &datFile, char *varibale, const int &num);
 
 bool writeDataToDatFile(const DatFile &datFile);
 ```
+
+### bmp
+
+Just read this file --- [BMP.h](./bmp/BMP.h)
+
+```cxx
+struct BmpFile {
+  string path;
+};
+```
