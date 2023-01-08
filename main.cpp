@@ -1,6 +1,8 @@
-#include "FileTools.hpp"
 #include <gtest/gtest.h>
+
 #include <iostream>
+
+#include "FileTools.hpp"
 
 FileTools fileTools;
 
@@ -452,7 +454,7 @@ TEST(jsonFile_Test, getFromJsonData_False) {
 
 #pragma endregion
 
-#pragma region dat
+#pragma region datTest
 
 TEST(datFile_Test, readDatFile) {
   DatFile dat_test;
@@ -487,6 +489,43 @@ TEST(datFile_Test, writeDataToDatFile) {
         fileTools.get_current_directory() + "/files_test/dat_test_copy.dat";
     EXPECT_EQ(fileTools.writeDataToDatFile(dat_test_copy), true);
   }
+}
+
+#pragma endregion
+
+#pragma region bmpTest
+
+TEST(bmpFile_Test, readBmpFile) {
+  BmpFile bmp_test_01;
+  BmpFile bmp_test_02;
+  bmp_test_01.path =
+      fileTools.get_current_directory() + "/files_test/bmp_test_01.bmp";
+  bmp_test_02.path =
+      fileTools.get_current_directory() + "/files_test/bmp_test_02.bmp";
+
+  BMP bmpObject_01(bmp_test_01.path.c_str());
+  BMP bmpObject_02(bmp_test_02.path.c_str());
+
+  EXPECT_EQ(bmpObject_01.bmp_info_header.height, 256);
+  EXPECT_EQ(bmpObject_01.bmp_info_header.width, 128);
+  EXPECT_EQ(bmpObject_02.bmp_info_header.height, 256);
+  EXPECT_EQ(bmpObject_02.bmp_info_header.width, 16);
+}
+
+TEST(bmpFile_Test, copyBmpFile) {
+  BmpFile bmp_test_01;
+  bmp_test_01.path =
+      fileTools.get_current_directory() + "/files_test/bmp_test_01.bmp";
+
+  string copy_bmp_file =
+      fileTools.get_current_directory() + "/files_test/copy_bmp.bmp";
+
+  BMP bmpObject(bmp_test_01.path.c_str());
+  bmpObject.write(copy_bmp_file.c_str());
+
+  BMP bmpObject_copy(copy_bmp_file.c_str());
+  EXPECT_EQ(bmpObject_copy.bmp_info_header.height, 256);
+  EXPECT_EQ(bmpObject_copy.bmp_info_header.width, 128);
 }
 
 #pragma endregion

@@ -1,3 +1,6 @@
+#ifndef FILETOOLS_HPP_
+#define FILETOOLS_HPP_
+
 #if defined(_MSC_VER)
 #include <direct.h>
 #define GetCurrentDir _getcwd
@@ -6,14 +9,17 @@
 #define GetCurrentDir getcwd
 #endif
 
-#include "ini/SimpleIni.h"
-#include "json/json.hpp"
+#include <sys/stat.h>
+
 #include <fstream>
 #include <iostream>
 #include <sstream>
 #include <string>
-#include <sys/stat.h>
 #include <vector>
+
+#include "bmp/BMP.h"
+#include "ini/SimpleIni.h"
+#include "json/json.hpp"
 
 using std::fstream;
 using std::ios;
@@ -43,13 +49,15 @@ struct DatFile {
   vector<char> data;
 };
 
+struct BmpFile {
+  string path;
+};
+
 class FileTools {
-private:
+ private:
   vector<string> split(const string &data, const string &separator) {
     vector<string> result;
-    if (data == "") {
-      return result;
-    }
+    if (data == "") return result;
 
     char *thisStr = new char[data.length() + 1];
     char *thisSeparator = new char[separator.length() + 1];
@@ -80,7 +88,7 @@ private:
     return result;
   }
 
-public:
+ public:
 #pragma region path
 
   string get_current_directory() {
@@ -97,21 +105,21 @@ public:
     return temp.append("/");
   }
 
-  template <typename... T> string mergePathArgs(string &arg, T &...args) {
+  template <typename... T>
+  string mergePathArgs(const string &arg, T &...args) {
     string path;
     path = mergePathArgs(arg);
     path += mergePathArgs(args...);
-    if (path[path.size() - 1] == '/')
-      path.pop_back();
+    if (path[path.size() - 1] == '/') path.pop_back();
     return path;
   }
 
-  template <typename... T> string mergePathArgs(const char *arg, T &...args) {
+  template <typename... T>
+  string mergePathArgs(const char *arg, T &...args) {
     string path;
     path = mergePathArgs(arg);
     path += mergePathArgs(args...);
-    if (path[path.size() - 1] == '/')
-      path.pop_back();
+    if (path[path.size() - 1] == '/') path.pop_back();
     return path;
   }
 
@@ -131,8 +139,7 @@ public:
     file.open(txtFile.path, ios::in);
 
     if (file.is_open()) {
-      while (getline(file, ln))
-        txtFile.data += (ln + "\n");
+      while (getline(file, ln)) txtFile.data += (ln + "\n");
 
       file.close();
 
@@ -167,8 +174,7 @@ public:
     const char *path = (char *)iniFile.path.c_str();
 
     SI_Error rc = iniFile.ini.LoadFile(path);
-    if (rc < 0)
-      return false;
+    if (rc < 0) return false;
 
     return true;
   }
@@ -194,11 +200,10 @@ public:
     else if (paramType[0] == 'd')
       param = stod(tempParam);
     else if (paramType[0] == 'b')
-      if (tempParam == "false" || tempParam == "0") {
+      if (tempParam == "false" || tempParam == "0")
         param = false;
-      } else if (tempParam == "true" || tempParam == "1") {
+      else if (tempParam == "true" || tempParam == "1")
         param = true;
-      }
   }
 
   template <typename T>
@@ -219,17 +224,14 @@ public:
       vector<string> tempParamArray = split(tempParamArrayStr, " ,\t\n");
 
       if (paramType[0] == 'i')
-        for (int i = 0; i < tempParamArray.size(); ++i) {
+        for (int i = 0; i < tempParamArray.size(); ++i)
           param[index++] = stoi(tempParamArray[i]);
-        }
       else if (paramType[0] == 'f')
-        for (int i = 0; i < tempParamArray.size(); ++i) {
+        for (int i = 0; i < tempParamArray.size(); ++i)
           param[index++] = stof(tempParamArray[i]);
-        }
       else if (paramType[0] == 'd')
-        for (int i = 0; i < tempParamArray.size(); ++i) {
+        for (int i = 0; i < tempParamArray.size(); ++i)
           param[index++] = stod(tempParamArray[i]);
-        }
 
       while (index <= size - 1) {
         param[index] = defaultVal[index];
@@ -259,11 +261,10 @@ public:
     else if (valueType[0] == 'd')
       toValue = to_string(fromValue);
     else if (valueType[0] == 'b')
-      if (fromValue == false) {
+      if (fromValue == false)
         toValue = "false";
-      } else if (fromValue == true) {
+      else if (fromValue == true)
         toValue = "true";
-      }
 
     const char *toValueC = (char *)toValue.c_str();
 
@@ -273,8 +274,7 @@ public:
   template <typename T>
   void setToIni(IniFile &iniFile, const char *section, const char *key,
                 T *fromValueArr, const int &size) {
-    if (size <= 0)
-      return;
+    if (size <= 0) return;
 
     const char *name = typeid(T).name();
     string valueType = name;
@@ -283,23 +283,17 @@ public:
     if (valueType[0] == 'i')
       for (int i = 0; i < size; ++i) {
         toValueArr += to_string(fromValueArr[i]);
-        if (i != size - 1) {
-          toValueArr += ", ";
-        }
+        if (i != size - 1) toValueArr += ", ";
       }
     else if (valueType[0] == 'f')
       for (int i = 0; i < size; ++i) {
         toValueArr += to_string(fromValueArr[i]);
-        if (i != size - 1) {
-          toValueArr += ", ";
-        }
+        if (i != size - 1) toValueArr += ", ";
       }
     else if (valueType[0] == 'd')
       for (int i = 0; i < size; ++i) {
         toValueArr += to_string(fromValueArr[i]);
-        if (i != size - 1) {
-          toValueArr += ", ";
-        }
+        if (i != size - 1) toValueArr += ", ";
       }
 
     const char *toValueC = (char *)toValueArr.c_str();
@@ -332,8 +326,7 @@ public:
     vector<string> keyArr = split(key, ".");
 
     for (int i = 0; i < keyArr.size() - 1; ++i)
-      if (temp.contains(keyArr[i]))
-        temp = temp.at(keyArr[i]);
+      if (temp.contains(keyArr[i])) temp = temp.at(keyArr[i]);
 
     if (temp.contains(keyArr[keyArr.size() - 1]))
       param = temp.at(keyArr[keyArr.size() - 1]);
@@ -348,8 +341,7 @@ public:
     vector<string> keyArr = split(key, ".");
 
     for (int i = 0; i < keyArr.size() - 1; ++i)
-      if (temp.contains(keyArr[i]))
-        temp = temp.at(keyArr[i]);
+      if (temp.contains(keyArr[i])) temp = temp.at(keyArr[i]);
 
     if (temp.contains(keyArr[keyArr.size() - 1]))
       param = temp.at(keyArr[keyArr.size() - 1]);
@@ -363,8 +355,7 @@ public:
     vector<string> keyArr = split(key, ".");
 
     for (int i = 0; i < keyArr.size() - 1; ++i)
-      if (temp.contains(keyArr[i]))
-        temp = temp.at(keyArr[i]);
+      if (temp.contains(keyArr[i])) temp = temp.at(keyArr[i]);
 
     int index = 0;
 
@@ -376,8 +367,7 @@ public:
     }
 
     if (index < size)
-      for (int i = index; i < size; ++i)
-        param[i] = defaultVal[i];
+      for (int i = index; i < size; ++i) param[i] = defaultVal[i];
   }
 
   template <typename T>
@@ -387,8 +377,7 @@ public:
     vector<string> keyArr = split(key, ".");
 
     for (int i = 0; i < keyArr.size() - 1; ++i)
-      if (temp.contains(keyArr[i]))
-        temp = temp.at(keyArr[i]);
+      if (temp.contains(keyArr[i])) temp = temp.at(keyArr[i]);
 
     int index = 0;
 
@@ -400,8 +389,7 @@ public:
     }
 
     if (index < size)
-      for (int i = index; i < size; ++i)
-        param[i] = defaultVal[i];
+      for (int i = index; i < size; ++i) param[i] = defaultVal[i];
   }
 
 #pragma endregion
@@ -411,9 +399,7 @@ public:
   bool readDatFile(DatFile &datFile) {
     FILE *fid = fopen(datFile.path.c_str(), "rb");
 
-    if (fid == NULL) {
-      return false;
-    }
+    if (fid == NULL) return false;
 
     fseek(fid, 0, SEEK_END);
     long lSize = ftell(fid);
@@ -422,14 +408,11 @@ public:
     int num = lSize / sizeof(char);
     char *pos = (char *)malloc(sizeof(char) * num);
 
-    if (pos == NULL) {
-      return false;
-    }
+    if (pos == NULL) return false;
 
     size_t temp = fread(pos, sizeof(char), num, fid);
-    for (int i = 0; i < num; ++i) {
-      datFile.data.push_back(pos[i]);
-    }
+
+    for (int i = 0; i < num; ++i) datFile.data.push_back(pos[i]);
 
     free(pos);
     fclose(fid);
@@ -440,17 +423,13 @@ public:
   bool readDatFile(DatFile &datFile, char *varibale, const int &num) {
     FILE *fid = fopen(datFile.path.c_str(), "rb");
 
-    if (fid == NULL) {
-      return false;
-    }
+    if (fid == NULL) return false;
 
     fseek(fid, 0, SEEK_END);
     long lSize = ftell(fid);
     rewind(fid);
 
-    if (lSize / sizeof(char) != num) {
-      return false;
-    }
+    if (lSize / sizeof(char) != num) return false;
 
     size_t temp = fread(varibale, sizeof(char), num, fid);
 
@@ -462,13 +441,10 @@ public:
   bool writeDataToDatFile(const DatFile &datFile) {
     FILE *fid = fopen(datFile.path.c_str(), "wb");
 
-    if (fid == NULL) {
-      return false;
-    }
+    if (fid == NULL) return false;
 
-    for (int i = 0; i < datFile.data.size(); ++i) {
+    for (int i = 0; i < datFile.data.size(); ++i)
       fwrite(&datFile.data[i], sizeof(char), 1, fid);
-    }
 
     fclose(fid);
 
@@ -476,4 +452,12 @@ public:
   }
 
 #pragma endregion
+
+#pragma region bmp
+
+  // TODO obligate
+
+#pragma endregion
 };
+
+#endif  // FILETOOLS_HPP_
