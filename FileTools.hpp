@@ -5,11 +5,11 @@
 #include <direct.h>
 #define GetCurrentDir _getcwd
 #elif defined(__GNUC__)
+#include <dirent.h>
+#include <sys/stat.h>
 #include <unistd.h>
 #define GetCurrentDir getcwd
 #endif
-
-#include <sys/stat.h>
 
 #include <fstream>
 #include <iostream>
@@ -91,7 +91,78 @@ class FileTools {
  public:
 #pragma region path
 
-  string get_current_directory() {
+  void createDirectory(const string &path) {
+#if defined(_MSC_VER)
+    _mkdir(path.c_str());
+#elif defined(__GNUC__)
+    mkdir(path.c_str(), 0755);
+#endif
+  }
+
+  bool deleteDirectory(string path) {
+#if defined(_MSC_VER)
+    struct _finddata_t fb;
+
+    if (path.at(path.length() - 1) != '\\' || path.at(path.length() - 1) != '/')
+      path.append("\\");
+
+    string findPath = path + "*";
+    intptr_t handle;
+    handle = _findfirst(findPath.c_str(), &fb);
+
+    if (handle != -1L) {
+      string pathTemp;
+      do {
+        if (strcmp(fb.name, "..") != 0 && strcmp(fb.name, ".") != 0) {
+          pathTemp.clear();
+          pathTemp = path + std::string(fb.name);
+
+          if (fb.attrib == _A_SUBDIR) {
+            deleteDirectory(pathTemp.c_str());
+          }
+
+          else {
+            remove(pathTemp.c_str());
+          }
+        }
+      } while (0 == _findnext(handle, &fb));
+      _findclose(handle);
+    }
+
+    return _rmdir(path.c_str()) == 0 ? true : false;
+
+#elif defined(__GNUC__)
+    if (path.at(path.length() - 1) != '\\' || path.at(path.length() - 1) != '/')
+      path.append("/");
+
+    DIR *d = opendir(path.c_str());
+
+    if (d != NULL) {
+      struct dirent *dt = NULL;
+
+      while (dt = readdir(d)) {
+        if (strcmp(dt->d_name, "..") != 0 && strcmp(dt->d_name, ".") != 0) {
+          struct stat st;
+          string fileName;
+          fileName = path + std::string(dt->d_name);
+          stat(fileName.c_str(), &st);
+
+          if (S_ISDIR(st.st_mode)) {
+            deleteDirectory(fileName);
+          } else {
+            remove(fileName.c_str());
+          }
+        }
+      }
+      closedir(d);
+    }
+
+    return rmdir(path.c_str()) == 0 ? true : false;
+
+#endif
+  }
+
+  string getCurrentDirectory() {
     char buff[250];
     char *temp = GetCurrentDir(buff, 250);
     string current_working_directory(buff);

@@ -23,7 +23,7 @@
 ### path
 
 ```cxx
-string get_current_directory();
+string getCurrentDirectory();
 
 string mergePathArgs(string arg);
 

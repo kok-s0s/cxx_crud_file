@@ -8,6 +8,28 @@ FileTools fileTools;
 
 #pragma region path
 
+TEST(path_Test, createDirectory) {
+  string currentDirectory = fileTools.getCurrentDirectory();
+  string newDir = currentDirectory + "/files_test/hello";
+
+  fileTools.createDirectory(newDir);
+
+  EXPECT_EQ(fileTools.pathExistFlag(newDir), true);
+}
+
+TEST(path_Test, deleteDirectory) {
+  string currentDirectory = fileTools.getCurrentDirectory();
+  string newDir = currentDirectory + "/files_test/hello_d";
+
+  fileTools.createDirectory(newDir);
+
+  EXPECT_EQ(fileTools.pathExistFlag(newDir), true);
+
+  fileTools.deleteDirectory(newDir);
+
+  EXPECT_EQ(fileTools.pathExistFlag(newDir), false);
+}
+
 TEST(path_Test, mergePathArgs) {
   string arg_01 = "C:";
   string arg_02 = "home";
@@ -19,10 +41,8 @@ TEST(path_Test, mergePathArgs) {
 }
 
 TEST(path_Test, pathExistFlag) {
-  string path_01 =
-      fileTools.get_current_directory() + "/files_test/test_01.txt";
-  string path_02 =
-      fileTools.get_current_directory() + "/files_test/test_10.txt";
+  string path_01 = fileTools.getCurrentDirectory() + "/files_test/test_01.txt";
+  string path_02 = fileTools.getCurrentDirectory() + "/files_test/test_10.txt";
 
   EXPECT_EQ(fileTools.pathExistFlag(path_01), true);
   EXPECT_EQ(fileTools.pathExistFlag(path_02), false);
@@ -35,7 +55,7 @@ TEST(path_Test, pathExistFlag) {
 TEST(txtFile_Test, readTxtFileLine) {
   TxtFile txt_test_01;
   txt_test_01.path =
-      fileTools.get_current_directory() + "/files_test/test_01.txt";
+      fileTools.getCurrentDirectory() + "/files_test/test_01.txt";
 
   EXPECT_EQ(fileTools.readTxtFileLine(txt_test_01), true);
   EXPECT_EQ(txt_test_01.data, "kok-s0s\ni like code.\n");
@@ -44,7 +64,7 @@ TEST(txtFile_Test, readTxtFileLine) {
 TEST(txtFile_Test, writeDataToTxtFile) {
   TxtFile txt_test_02;
   txt_test_02.path =
-      fileTools.get_current_directory() + "/files_test/test_02.txt";
+      fileTools.getCurrentDirectory() + "/files_test/test_02.txt";
 
   std::string data = "hei\nare you ok?\n";
 
@@ -59,7 +79,7 @@ TEST(txtFile_Test, writeDataToTxtFile) {
 TEST(iniFile_Test, iniSetup) {
   IniFile ini_test_01;
   ini_test_01.path =
-      fileTools.get_current_directory() + "/files_test/ini_test_01.ini";
+      fileTools.getCurrentDirectory() + "/files_test/ini_test_01.ini";
 
   EXPECT_EQ(fileTools.iniSetup(ini_test_01), true);
 }
@@ -67,7 +87,7 @@ TEST(iniFile_Test, iniSetup) {
 TEST(iniFile_Test, getStringFromIni) {
   IniFile ini_test_01;
   ini_test_01.path =
-      fileTools.get_current_directory() + "/files_test/ini_test_01.ini";
+      fileTools.getCurrentDirectory() + "/files_test/ini_test_01.ini";
 
   EXPECT_EQ(fileTools.iniSetup(ini_test_01), true);
 
@@ -87,7 +107,7 @@ TEST(iniFile_Test, getStringFromIni) {
 TEST(iniFile_Test, getIntFromIni) {
   IniFile ini_test_01;
   ini_test_01.path =
-      fileTools.get_current_directory() + "/files_test/ini_test_01.ini";
+      fileTools.getCurrentDirectory() + "/files_test/ini_test_01.ini";
 
   EXPECT_EQ(fileTools.iniSetup(ini_test_01), true);
 
@@ -107,7 +127,7 @@ TEST(iniFile_Test, getIntFromIni) {
 TEST(iniFile_Test, getFloatFromIni) {
   IniFile ini_test_01;
   ini_test_01.path =
-      fileTools.get_current_directory() + "/files_test/ini_test_01.ini";
+      fileTools.getCurrentDirectory() + "/files_test/ini_test_01.ini";
 
   EXPECT_EQ(fileTools.iniSetup(ini_test_01), true);
 
@@ -127,7 +147,7 @@ TEST(iniFile_Test, getFloatFromIni) {
 TEST(iniFile_Test, getDoubleFromIni) {
   IniFile ini_test_01;
   ini_test_01.path =
-      fileTools.get_current_directory() + "/files_test/ini_test_01.ini";
+      fileTools.getCurrentDirectory() + "/files_test/ini_test_01.ini";
 
   EXPECT_EQ(fileTools.iniSetup(ini_test_01), true);
 
@@ -150,7 +170,7 @@ TEST(iniFile_Test, getDoubleFromIni) {
 TEST(iniFile_Test, getBoolFromIni) {
   IniFile ini_test_01;
   ini_test_01.path =
-      fileTools.get_current_directory() + "/files_test/ini_test_01.ini";
+      fileTools.getCurrentDirectory() + "/files_test/ini_test_01.ini";
 
   EXPECT_EQ(fileTools.iniSetup(ini_test_01), true);
 
@@ -170,7 +190,7 @@ TEST(iniFile_Test, getBoolFromIni) {
 TEST(iniFile_Test, getArrayIntFromIni) {
   IniFile ini_test_01;
   ini_test_01.path =
-      fileTools.get_current_directory() + "/files_test/ini_test_01.ini";
+      fileTools.getCurrentDirectory() + "/files_test/ini_test_01.ini";
 
   EXPECT_EQ(fileTools.iniSetup(ini_test_01), true);
 
@@ -196,7 +216,7 @@ TEST(iniFile_Test, getArrayIntFromIni) {
 TEST(iniFile_Test, getArrayFloatFromIni) {
   IniFile ini_test_01;
   ini_test_01.path =
-      fileTools.get_current_directory() + "/files_test/ini_test_01.ini";
+      fileTools.getCurrentDirectory() + "/files_test/ini_test_01.ini";
 
   EXPECT_EQ(fileTools.iniSetup(ini_test_01), true);
 
@@ -223,7 +243,7 @@ TEST(iniFile_Test, getArrayFloatFromIni) {
 TEST(iniFile_Test, getArrayDoubleFromIni) {
   IniFile ini_test_01;
   ini_test_01.path =
-      fileTools.get_current_directory() + "/files_test/ini_test_01.ini";
+      fileTools.getCurrentDirectory() + "/files_test/ini_test_01.ini";
 
   EXPECT_EQ(fileTools.iniSetup(ini_test_01), true);
 
@@ -249,7 +269,7 @@ TEST(iniFile_Test, getArrayDoubleFromIni) {
 TEST(iniFile_Test, getFromIni_False) {
   IniFile ini_test_03;
   ini_test_03.path =
-      fileTools.get_current_directory() + "/files_test/no_find.ini";
+      fileTools.getCurrentDirectory() + "/files_test/no_find.ini";
 
   EXPECT_EQ(fileTools.iniSetup(ini_test_03), false);
 
@@ -266,7 +286,7 @@ TEST(iniFile_Test, getFromIni_False) {
 TEST(iniFile_Test, setToIni) {
   IniFile ini_test_02;
   ini_test_02.path =
-      fileTools.get_current_directory() + "/files_test/ini_test_02.ini";
+      fileTools.getCurrentDirectory() + "/files_test/ini_test_02.ini";
 
   if (fileTools.iniSetup(ini_test_02)) {
     fileTools.setToIni(ini_test_02, "string", "str1", "kok-s0s");
@@ -285,7 +305,7 @@ TEST(iniFile_Test, setToIni) {
 TEST(iniFile_Test, setArrayToIni) {
   IniFile ini_test_02;
   ini_test_02.path =
-      fileTools.get_current_directory() + "/files_test/ini_test_02.ini";
+      fileTools.getCurrentDirectory() + "/files_test/ini_test_02.ini";
 
   if (fileTools.iniSetup(ini_test_02)) {
     int arr_int[] = {2, 3, 4, 5, 6, 1};
@@ -310,7 +330,7 @@ TEST(iniFile_Test, setArrayToIni) {
 TEST(jsonFile_Test, readDataFromJsonFile) {
   JsonFile json_test;
   json_test.path =
-      fileTools.get_current_directory() + "/files_test/json_test.json";
+      fileTools.getCurrentDirectory() + "/files_test/json_test.json";
 
   EXPECT_EQ(fileTools.readDataFromJsonFile(json_test), true);
 }
@@ -318,7 +338,7 @@ TEST(jsonFile_Test, readDataFromJsonFile) {
 TEST(jsonFile_Test, getFromJsonData) {
   JsonFile json_test;
   json_test.path =
-      fileTools.get_current_directory() + "/files_test/json_test.json";
+      fileTools.getCurrentDirectory() + "/files_test/json_test.json";
 
   std::string json_value_string;
   int json_value_int;
@@ -353,7 +373,7 @@ TEST(jsonFile_Test, getFromJsonData) {
 TEST(jsonFile_Test, getStringArrFromJsonData) {
   JsonFile json_test;
   json_test.path =
-      fileTools.get_current_directory() + "/files_test/json_test.json";
+      fileTools.getCurrentDirectory() + "/files_test/json_test.json";
 
   std::string json_value[3];
   std::string json_target_value[] = {"python", "c++", "ruby"};
@@ -372,7 +392,7 @@ TEST(jsonFile_Test, getStringArrFromJsonData) {
 TEST(jsonFile_Test, getIntArrFromJsonData) {
   JsonFile json_test;
   json_test.path =
-      fileTools.get_current_directory() + "/files_test/json_test.json";
+      fileTools.getCurrentDirectory() + "/files_test/json_test.json";
 
   int json_value[3];
   int json_target_value[] = {1, 2, 3};
@@ -391,7 +411,7 @@ TEST(jsonFile_Test, getIntArrFromJsonData) {
 TEST(jsonFile_Test, getDoubleArrFromJsonData) {
   JsonFile json_test;
   json_test.path =
-      fileTools.get_current_directory() + "/files_test/json_test.json";
+      fileTools.getCurrentDirectory() + "/files_test/json_test.json";
 
   double json_value[3];
   double json_target_value[] = {1.11, 2.11, 3.11};
@@ -410,7 +430,7 @@ TEST(jsonFile_Test, getDoubleArrFromJsonData) {
 TEST(jsonFile_Test, getFromJsonData_False) {
   JsonFile json_test;
   json_test.path =
-      fileTools.get_current_directory() + "/files_test/json_false.json";
+      fileTools.getCurrentDirectory() + "/files_test/json_false.json";
 
   std::string json_value_string;
   int json_value_int;
@@ -458,16 +478,14 @@ TEST(jsonFile_Test, getFromJsonData_False) {
 
 TEST(datFile_Test, readDatFile) {
   DatFile dat_test;
-  dat_test.path =
-      fileTools.get_current_directory() + "/files_test/dat_test.dat";
+  dat_test.path = fileTools.getCurrentDirectory() + "/files_test/dat_test.dat";
 
   EXPECT_EQ(fileTools.readDatFile(dat_test), true);
 }
 
 TEST(datFile_Test, readDatFileToPtr) {
   DatFile dat_test;
-  dat_test.path =
-      fileTools.get_current_directory() + "/files_test/dat_test.dat";
+  dat_test.path = fileTools.getCurrentDirectory() + "/files_test/dat_test.dat";
 
   long dataSize = 8192;
   int num = dataSize / sizeof(char);
@@ -480,13 +498,12 @@ TEST(datFile_Test, readDatFileToPtr) {
 
 TEST(datFile_Test, writeDataToDatFile) {
   DatFile dat_test;
-  dat_test.path =
-      fileTools.get_current_directory() + "/files_test/dat_test.dat";
+  dat_test.path = fileTools.getCurrentDirectory() + "/files_test/dat_test.dat";
 
   if (fileTools.readDatFile(dat_test)) {
     DatFile dat_test_copy = dat_test;
     dat_test_copy.path =
-        fileTools.get_current_directory() + "/files_test/dat_test_copy.dat";
+        fileTools.getCurrentDirectory() + "/files_test/dat_test_copy.dat";
     EXPECT_EQ(fileTools.writeDataToDatFile(dat_test_copy), true);
   }
 }
@@ -499,9 +516,9 @@ TEST(bmpFile_Test, readBmpFile) {
   BmpFile bmp_test_01;
   BmpFile bmp_test_02;
   bmp_test_01.path =
-      fileTools.get_current_directory() + "/files_test/bmp_test_01.bmp";
+      fileTools.getCurrentDirectory() + "/files_test/bmp_test_01.bmp";
   bmp_test_02.path =
-      fileTools.get_current_directory() + "/files_test/bmp_test_02.bmp";
+      fileTools.getCurrentDirectory() + "/files_test/bmp_test_02.bmp";
 
   BMP bmpObject_01(bmp_test_01.path.c_str());
   BMP bmpObject_02(bmp_test_02.path.c_str());
@@ -515,10 +532,10 @@ TEST(bmpFile_Test, readBmpFile) {
 TEST(bmpFile_Test, copyBmpFile) {
   BmpFile bmp_test_01;
   bmp_test_01.path =
-      fileTools.get_current_directory() + "/files_test/bmp_test_01.bmp";
+      fileTools.getCurrentDirectory() + "/files_test/bmp_test_01.bmp";
 
   string copy_bmp_file =
-      fileTools.get_current_directory() + "/files_test/copy_bmp.bmp";
+      fileTools.getCurrentDirectory() + "/files_test/copy_bmp.bmp";
 
   BMP bmpObject(bmp_test_01.path.c_str());
   bmpObject.write(copy_bmp_file.c_str());
