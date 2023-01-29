@@ -3,6 +3,7 @@
 
 #if defined(_MSC_VER)
 #include <direct.h>
+#include <io.h>
 #define GetCurrentDir _getcwd
 #elif defined(__GNUC__)
 #include <dirent.h>
