@@ -470,6 +470,28 @@ TEST(jsonFile_Test, getFromJson_False) {
   }
 }
 
+TEST(jsonFile_Test, setToJson) {
+  JsonFile store_json;
+  store_json.path =
+      fileTools.getCurrentDirectory() + "/files_test/store_json.json";
+
+  int a[10] = {0};
+
+  store_json.data["nickname"] = "kok-s0s";
+  store_json.data["birthday"] = "0219";
+  store_json.data["array"] = a;
+
+  json sub;
+
+  sub["work"] = "C++ Dev";
+
+  store_json.data["subJson"] = sub;
+
+  std::ofstream file(store_json.path);
+  file << store_json.data;
+  file.flush();
+}
+
 #pragma endregion
 
 #pragma region datTest
