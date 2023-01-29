@@ -4,6 +4,7 @@
 #if defined(_MSC_VER)
 #include <direct.h>
 #include <io.h>
+#pragma warning(disable : 4503)
 #define GetCurrentDir _getcwd
 #elif defined(__GNUC__)
 #include <dirent.h>
