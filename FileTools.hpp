@@ -47,7 +47,7 @@ struct JsonFile {
 
 struct DatFile {
   string path;
-  vector<char> data;
+  vector<unsigned char> data;
 };
 
 struct BmpFile {
@@ -55,7 +55,9 @@ struct BmpFile {
 };
 
 class FileTools {
- private:
+ public:
+#pragma region handleString
+
   vector<string> split(const string &data, const string &separator) {
     vector<string> result;
     if (data == "") return result;
@@ -89,7 +91,8 @@ class FileTools {
     return result;
   }
 
- public:
+#pragma endregion
+
 #pragma region path
 
   void createDirectory(const string &path) {
@@ -195,7 +198,7 @@ class FileTools {
     return path;
   }
 
-  bool pathExistFlag(const string &path) {
+  bool pathExists(const string &path) {
     struct stat buffer;
     return (stat(path.c_str(), &buffer) == 0);
   }
@@ -392,8 +395,8 @@ class FileTools {
       return false;
   }
 
-  void getFromJsonData(const JsonFile &jsonFile, const string &key,
-                       string &param, string defaultVal) {
+  void getFromJson(const JsonFile &jsonFile, const string &key, string &param,
+                   string defaultVal) {
     json temp = jsonFile.data;
     vector<string> keyArr = split(key, ".");
 
@@ -407,8 +410,8 @@ class FileTools {
   }
 
   template <typename T>
-  void getFromJsonData(const JsonFile &jsonFile, const string &key, T &param,
-                       T defaultVal) {
+  void getFromJson(const JsonFile &jsonFile, const string &key, T &param,
+                   T defaultVal) {
     json temp = jsonFile.data;
     vector<string> keyArr = split(key, ".");
 
@@ -421,8 +424,8 @@ class FileTools {
       param = defaultVal;
   }
 
-  void getFromJsonData(const JsonFile &jsonFile, const string &key,
-                       string *param, string *defaultVal, const int &size) {
+  void getFromJson(const JsonFile &jsonFile, const string &key, string *param,
+                   string *defaultVal, const int &size) {
     json temp = jsonFile.data;
     vector<string> keyArr = split(key, ".");
 
@@ -443,8 +446,8 @@ class FileTools {
   }
 
   template <typename T>
-  void getFromJsonData(const JsonFile &jsonFile, const string &key, T *param,
-                       T *defaultVal, const int &size) {
+  void getFromJson(const JsonFile &jsonFile, const string &key, T *param,
+                   T *defaultVal, const int &size) {
     json temp = jsonFile.data;
     vector<string> keyArr = split(key, ".");
 
@@ -477,12 +480,12 @@ class FileTools {
     long lSize = ftell(fid);
     rewind(fid);
 
-    int num = lSize / sizeof(char);
-    char *pos = (char *)malloc(sizeof(char) * num);
+    int num = lSize / sizeof(unsigned char);
+    char *pos = (char *)malloc(sizeof(unsigned char) * num);
 
     if (pos == NULL) return false;
 
-    size_t temp = fread(pos, sizeof(char), num, fid);
+    size_t temp = fread(pos, sizeof(unsigned char), num, fid);
 
     for (int i = 0; i < num; ++i) datFile.data.push_back(pos[i]);
 
@@ -492,8 +495,8 @@ class FileTools {
     return true;
   }
 
-  bool readDatFile(DatFile &datFile, char *varibale, const int &num) {
-    FILE *fid = fopen(datFile.path.c_str(), "rb");
+  bool readDatFile(const string &datFilePath, char *varibale, const int &num) {
+    FILE *fid = fopen(datFilePath.c_str(), "rb");
 
     if (fid == NULL) return false;
 
@@ -501,9 +504,28 @@ class FileTools {
     long lSize = ftell(fid);
     rewind(fid);
 
-    if (lSize / sizeof(char) != num) return false;
+    if (lSize / sizeof(char) < num) return false;
 
     size_t temp = fread(varibale, sizeof(char), num, fid);
+
+    fclose(fid);
+
+    return true;
+  }
+
+  bool readDatFile(const string &datFilePath, unsigned char *varibale,
+                   const int &num) {
+    FILE *fid = fopen(datFilePath.c_str(), "rb");
+
+    if (fid == NULL) return false;
+
+    fseek(fid, 0, SEEK_END);
+    long lSize = ftell(fid);
+    rewind(fid);
+
+    if (lSize / sizeof(unsigned char) < num) return false;
+
+    size_t temp = fread(varibale, sizeof(unsigned char), num, fid);
 
     fclose(fid);
 
@@ -516,7 +538,7 @@ class FileTools {
     if (fid == NULL) return false;
 
     for (int i = 0; i < datFile.data.size(); ++i)
-      fwrite(&datFile.data[i], sizeof(char), 1, fid);
+      fwrite(&datFile.data[i], sizeof(unsigned char), 1, fid);
 
     fclose(fid);
 
