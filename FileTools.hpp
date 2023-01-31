@@ -4,7 +4,11 @@
 #if defined(_MSC_VER)
 #include <direct.h>
 #include <io.h>
+#pragma warning(disable : 4267)
+#pragma warning(disable : 4244)
 #pragma warning(disable : 4503)
+#pragma warning(disable : 4805)
+#pragma warning(disable : 4996)
 #define GetCurrentDir _getcwd
 #elif defined(__GNUC__)
 #include <dirent.h>
@@ -172,6 +176,10 @@ class FileTools {
     char *temp = GetCurrentDir(buff, 250);
     string current_working_directory(buff);
     return current_working_directory;
+  }
+
+  string getCurrentDirectory(const string &path) {
+    return path.substr(0, path.find_last_of('/'));
   }
 
   string mergePathArgs(string arg) { return arg.append("/"); }
@@ -544,6 +552,37 @@ class FileTools {
     fclose(fid);
 
     return true;
+  }
+
+  bool saveDatFileExt(const string &fileName, unsigned char *extData,
+                      const int &extDataSize, unsigned char *data,
+                      const int &dataSize) {
+    if (!pathExists(getCurrentDirectory(fileName)))
+      createDirectory(getCurrentDirectory(fileName));
+
+    FILE *fid = fopen(fileName.c_str(), "wb");
+
+    if (fid == NULL) return false;
+
+    if (extData != nullptr && extDataSize != 0) {
+      for (int i = 0; i < extDataSize; ++i)
+        fwrite(&extData[i], sizeof(unsigned char), 1, fid);
+    }
+
+    for (int i = 0; i < dataSize; ++i)
+      fwrite(&data[i], sizeof(unsigned char), 1, fid);
+
+    fclose(fid);
+
+    return true;
+  }
+
+  bool saveOutputData(int *extData, const int &extDataCount,
+                      const string &absoluteFilePath, unsigned char *data,
+                      const int &dataSize) {
+    const int extDataSize = extDataCount * sizeof(int);
+    return saveDatFileExt(absoluteFilePath, (unsigned char *)extData,
+                          extDataSize, data, dataSize);
   }
 
 #pragma endregion

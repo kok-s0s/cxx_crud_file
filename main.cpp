@@ -12,7 +12,7 @@ TEST(path_Test, createDirectory) {
   string currentDirectory = fileTools.getCurrentDirectory();
   string newDir = currentDirectory + "/files_test/hello";
 
-  fileTools.createDirectory(newDir);
+  if (!fileTools.pathExists(newDir)) fileTools.createDirectory(newDir);
 
   EXPECT_EQ(fileTools.pathExists(newDir), true);
 }
@@ -28,6 +28,12 @@ TEST(path_Test, deleteDirectory) {
   fileTools.deleteDirectory(newDir);
 
   EXPECT_EQ(fileTools.pathExists(newDir), false);
+}
+
+TEST(path_Test, getCurrentDirectory) {
+  EXPECT_EQ(fileTools.getCurrentDirectory(
+                "C:/home/kok-s0s/cxx_curd_file_unix/main.cpp"),
+            "C:/home/kok-s0s/cxx_curd_file_unix");
 }
 
 TEST(path_Test, mergePathArgs) {
@@ -525,6 +531,27 @@ TEST(datFile_Test, writeDataToDatFile) {
     dat_test_copy.path =
         fileTools.getCurrentDirectory() + "/files_test/dat_test_copy.dat";
     EXPECT_EQ(fileTools.writeDataToDatFile(dat_test_copy), true);
+  }
+}
+
+TEST(datFile_Test, saveOutputData) {
+  string datFilePath =
+      fileTools.getCurrentDirectory() + "/files_test/dat_test.dat";
+
+  long dataSize = 8192;
+  int num = dataSize / sizeof(char);
+  unsigned char *variable = (unsigned char *)malloc(sizeof(char) * num);
+
+  if (fileTools.readDatFile(datFilePath, variable, num)) {
+    string dat_test_ptr =
+        fileTools.getCurrentDirectory() + "/files_test/dat_test_ptr.dat";
+
+    unsigned char *data = variable;
+
+    int extData[] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+
+    EXPECT_EQ(fileTools.saveOutputData(extData, 10, dat_test_ptr, data, 8192),
+              true);
   }
 }
 
