@@ -526,8 +526,7 @@ class FileTools {
 
     if (fid == NULL) return false;
 
-    for (int i = 0; i < datFile.size; ++i)
-      fwrite(&datFile.data[i], sizeof(unsigned char), 1, fid);
+    fwrite(datFile.data, sizeof(unsigned char), datFile.size, fid);
 
     fclose(fid);
 
@@ -540,8 +539,7 @@ class FileTools {
 
     if (fid == NULL) return false;
 
-    for (int i = 0; i < size; ++i)
-      fwrite(&data[i], sizeof(unsigned char), 1, fid);
+    fwrite(data, sizeof(unsigned char), size, fid);
 
     fclose(fid);
 
@@ -559,12 +557,10 @@ class FileTools {
     if (fid == NULL) return false;
 
     if (extData != nullptr && extDataSize != 0) {
-      for (int i = 0; i < extDataSize; ++i)
-        fwrite(&extData[i], sizeof(unsigned char), 1, fid);
+      fwrite(extData, sizeof(unsigned char), extDataSize, fid);
     }
 
-    for (int i = 0; i < dataSize; ++i)
-      fwrite(&data[i], sizeof(unsigned char), 1, fid);
+    fwrite(data, sizeof(unsigned char), dataSize, fid);
 
     fclose(fid);
 
