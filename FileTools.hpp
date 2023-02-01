@@ -19,6 +19,7 @@
 
 #include <fstream>
 #include <iostream>
+#include <regex>
 #include <sstream>
 #include <string>
 #include <vector>
@@ -29,6 +30,8 @@
 
 using std::fstream;
 using std::ios;
+using std::regex;
+using std::smatch;
 using std::string;
 using std::to_string;
 using std::vector;
@@ -582,6 +585,32 @@ class FileTools {
   // TODO obligate
 
 #pragma endregion
+};
+
+class String {
+ private:
+  string _content;
+  // regex str_regex("(\\w+)");
+  smatch _match;
+
+ public:
+  String(string content) { _content = content; }
+  ~String() {}
+
+  String args(string item) {
+    // if (std::regex_search(_content, _match, str_regex)) {
+    //   std::cout << "matches for '" << _content << "'\n";
+    //   std::cout << "Prefix: '" << _match.prefix() << "'\n";
+    //   for (size_t i = 0; i < _match.size(); ++i)
+    //     std::cout << i << ": " << _match[i] << '\n';
+    //   std::cout << "Suffix: '" << _match.suffix() << "\'\n\n";
+    // }
+  }
+
+  template <typename T>
+  String args(T item) {}
+
+  string to_string() { return _content; }
 };
 
 #endif  // FILETOOLS_HPP_

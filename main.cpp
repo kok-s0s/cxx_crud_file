@@ -628,3 +628,21 @@ TEST(bmpFile_Test, copyBmpFile) {
 }
 
 #pragma endregion
+
+#pragma region String
+
+TEST(string_Test, args) {
+  string arg_01 = "test";
+  string arg_02 = "folder";
+  string arg_03 = "text.txt";
+
+  string path = String("C:/home/%1/%2/%3")
+                    .args(arg_01)
+                    .args(arg_02)
+                    .args(arg_03)
+                    .to_string();
+
+  EXPECT_EQ(path, "C:/home/test/folder/text.txt");
+}
+
+#pragma endregion
