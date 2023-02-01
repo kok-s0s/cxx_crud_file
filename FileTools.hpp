@@ -52,7 +52,8 @@ struct JsonFile {
 
 struct DatFile {
   string path;
-  vector<unsigned char> data;
+  unsigned char *data;
+  int size;
 };
 
 struct BmpFile {
@@ -490,32 +491,11 @@ class FileTools {
     rewind(fid);
 
     int num = lSize / sizeof(unsigned char);
-    char *pos = (char *)malloc(sizeof(unsigned char) * num);
 
-    if (pos == NULL) return false;
+    datFile.size = num;
+    datFile.data = (unsigned char *)malloc(sizeof(unsigned char) * num);
 
-    size_t temp = fread(pos, sizeof(unsigned char), num, fid);
-
-    for (int i = 0; i < num; ++i) datFile.data.push_back(pos[i]);
-
-    free(pos);
-    fclose(fid);
-
-    return true;
-  }
-
-  bool readDatFile(const string &datFilePath, char *varibale, const int &num) {
-    FILE *fid = fopen(datFilePath.c_str(), "rb");
-
-    if (fid == NULL) return false;
-
-    fseek(fid, 0, SEEK_END);
-    long lSize = ftell(fid);
-    rewind(fid);
-
-    if (lSize / sizeof(char) < num) return false;
-
-    size_t temp = fread(varibale, sizeof(char), num, fid);
+    size_t temp = fread(datFile.data, sizeof(unsigned char), num, fid);
 
     fclose(fid);
 
@@ -546,8 +526,22 @@ class FileTools {
 
     if (fid == NULL) return false;
 
-    for (int i = 0; i < datFile.data.size(); ++i)
+    for (int i = 0; i < datFile.size; ++i)
       fwrite(&datFile.data[i], sizeof(unsigned char), 1, fid);
+
+    fclose(fid);
+
+    return true;
+  }
+
+  bool appendWriteDataToDatFile(const string &datFilePath, unsigned char *data,
+                                const int &size) {
+    FILE *fid = fopen(datFilePath.c_str(), "ab");
+
+    if (fid == NULL) return false;
+
+    for (int i = 0; i < size; ++i)
+      fwrite(&data[i], sizeof(unsigned char), 1, fid);
 
     fclose(fid);
 

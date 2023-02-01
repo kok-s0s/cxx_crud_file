@@ -533,10 +533,11 @@ TEST(datFile_Test, readDatFileToPtr) {
 
   long dataSize = 8192;
   int num = dataSize / sizeof(char);
-  char *variable = (char *)malloc(sizeof(char) * num);
+  unsigned char *variable =
+      (unsigned char *)malloc(sizeof(unsigned char) * num);
 
   if (fileTools.readDatFile(datFilePath, variable, num)) {
-    EXPECT_EQ((int)variable[0], -87);
+    EXPECT_EQ((unsigned int)variable[0], 169);
   }
 }
 
@@ -549,6 +550,22 @@ TEST(datFile_Test, writeDataToDatFile) {
     dat_test_copy.path =
         fileTools.getCurrentDirectory() + "/files_test/dat_test_copy.dat";
     EXPECT_EQ(fileTools.writeDataToDatFile(dat_test_copy), true);
+  }
+}
+
+TEST(datFile_Test, writeDataToDatFile_Twice) {
+  DatFile dat_test;
+  dat_test.path = fileTools.getCurrentDirectory() + "/files_test/dat_test.dat";
+
+  if (fileTools.readDatFile(dat_test)) {
+    DatFile dat_test_twice = dat_test;
+    dat_test_twice.path =
+        fileTools.getCurrentDirectory() + "/files_test/dat_test_twice.dat";
+    EXPECT_EQ(fileTools.writeDataToDatFile(dat_test_twice), true);
+    EXPECT_EQ(
+        fileTools.appendWriteDataToDatFile(
+            dat_test_twice.path, dat_test_twice.data, dat_test_twice.size),
+        true);
   }
 }
 
