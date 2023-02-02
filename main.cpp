@@ -3,6 +3,7 @@
 #include <iostream>
 
 #include "FileTools.hpp"
+#include "UString.hpp"
 
 FileTools fileTools;
 
@@ -56,7 +57,7 @@ TEST(path_Test, mergePathArgs_Int) {
   string arg_01 = "C:";
   string arg_02 = "home";
   int arg_03 = 1;
-  string arg_03_str = to_string(arg_03);
+  string arg_03_str = std::to_string(arg_03);
 
   string path =
       fileTools.mergePathArgs(arg_01, arg_02, arg_03_str, "0219", "main.cpp");
