@@ -590,25 +590,69 @@ class FileTools {
 class String {
  private:
   string _content;
-  // regex str_regex("(\\w+)");
-  smatch _match;
 
  public:
   String(string content) { _content = content; }
   ~String() {}
 
-  String args(string item) {
-    // if (std::regex_search(_content, _match, str_regex)) {
-    //   std::cout << "matches for '" << _content << "'\n";
-    //   std::cout << "Prefix: '" << _match.prefix() << "'\n";
-    //   for (size_t i = 0; i < _match.size(); ++i)
-    //     std::cout << i << ": " << _match[i] << '\n';
-    //   std::cout << "Suffix: '" << _match.suffix() << "\'\n\n";
-    // }
+  String args(string substitution) {
+    string upToDateContent = "";
+    string suffix = "";
+
+    regex percentSign("%([1-9]{1})");
+
+    auto content_begin =
+        std::sregex_iterator(_content.begin(), _content.end(), percentSign);
+    auto content_end = std::sregex_iterator();
+
+    for (std::sregex_iterator i = content_begin; i != content_end; ++i) {
+      smatch match = *i;
+      string match_str = match.str();
+
+      int index = match_str[1] - '1';
+
+      if (index == 0)
+        upToDateContent += match.prefix().str() + substitution;
+      else
+        upToDateContent += match.prefix().str() + "%" + std::to_string(index);
+
+      suffix = match.suffix();
+    }
+
+    upToDateContent += suffix;
+
+    return String(upToDateContent);
   }
 
   template <typename T>
-  String args(T item) {}
+  String args(T substitution) {
+    string upToDateContent = "";
+    string suffix = "";
+
+    regex percentSign("%([1-9]{1})");
+
+    auto content_begin =
+        std::sregex_iterator(_content.begin(), _content.end(), percentSign);
+    auto content_end = std::sregex_iterator();
+
+    for (std::sregex_iterator i = content_begin; i != content_end; ++i) {
+      smatch match = *i;
+      string match_str = match.str();
+
+      int index = match_str[1] - '1';
+
+      if (index == 0)
+        upToDateContent += match.prefix().str() + std::to_string(substitution);
+      else
+        upToDateContent += match.prefix().str() + "%" + std::to_string(index);
+
+      suffix = match.suffix();
+    }
+
+    upToDateContent += suffix;
+
+    return String(upToDateContent);
+  }
 
   string to_string() { return _content; }
 };

@@ -631,9 +631,23 @@ TEST(bmpFile_Test, copyBmpFile) {
 
 #pragma region String
 
-TEST(string_Test, args) {
+TEST(string_Test, args_string) {
   string arg_01 = "test";
   string arg_02 = "folder";
+  string arg_03 = "cpp";
+
+  string path = String("C:/home/%1/%2/%3/hello.c")
+                    .args(arg_01)
+                    .args(arg_02)
+                    .args(arg_03)
+                    .to_string();
+
+  EXPECT_EQ(path, "C:/home/test/folder/cpp/hello.c");
+}
+
+TEST(string_Test, args_int) {
+  string arg_01 = "test";
+  int arg_02 = 1;
   string arg_03 = "text.txt";
 
   string path = String("C:/home/%1/%2/%3")
@@ -642,7 +656,7 @@ TEST(string_Test, args) {
                     .args(arg_03)
                     .to_string();
 
-  EXPECT_EQ(path, "C:/home/test/folder/text.txt");
+  EXPECT_EQ(path, "C:/home/test/1/text.txt");
 }
 
 #pragma endregion
