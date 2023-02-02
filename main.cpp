@@ -648,13 +648,23 @@ TEST(string_Test, args_string) {
 TEST(string_Test, args_int) {
   string arg_01 = "test";
   int arg_02 = 1;
-  string arg_03 = "text.txt";
+  string arg_03 = "text";
 
-  string path = String("C:/home/%1/%2/%3")
+  string path = String("C:/home/%1/%2/%3.txt")
                     .args(arg_01)
                     .args(arg_02)
                     .args(arg_03)
                     .to_string();
+
+  EXPECT_EQ(path, "C:/home/test/1/text.txt");
+}
+
+TEST(string_Test, args_loop) {
+  string arg_01 = "test";
+  int arg_02 = 1;
+
+  string path =
+      String("C:/home/%1/%2/%3.txt").args(arg_01, arg_02, "text").to_string();
 
   EXPECT_EQ(path, "C:/home/test/1/text.txt");
 }
