@@ -55,7 +55,7 @@ struct JsonFile {
 
 struct DatFile {
   string path;
-  unsigned char *data;
+  uint8_t *data;
   int size;
 };
 
@@ -493,19 +493,19 @@ class FileTools {
     long lSize = ftell(fid);
     rewind(fid);
 
-    int num = lSize / sizeof(unsigned char);
+    int num = lSize / sizeof(uint8_t);
 
     datFile.size = num;
-    datFile.data = (unsigned char *)malloc(sizeof(unsigned char) * num);
+    datFile.data = (uint8_t *)malloc(sizeof(uint8_t) * num);
 
-    size_t temp = fread(datFile.data, sizeof(unsigned char), num, fid);
+    size_t temp = fread(datFile.data, sizeof(uint8_t), num, fid);
 
     fclose(fid);
 
     return true;
   }
 
-  bool readDatFile(const string &datFilePath, unsigned char *varibale,
+  bool readDatFile(const string &datFilePath, uint8_t *varibale,
                    const int &num) {
     FILE *fid = fopen(datFilePath.c_str(), "rb");
 
@@ -515,9 +515,9 @@ class FileTools {
     long lSize = ftell(fid);
     rewind(fid);
 
-    if (lSize / sizeof(unsigned char) < num) return false;
+    if (lSize / sizeof(uint8_t) < num) return false;
 
-    size_t temp = fread(varibale, sizeof(unsigned char), num, fid);
+    size_t temp = fread(varibale, sizeof(uint8_t), num, fid);
 
     fclose(fid);
 
@@ -529,28 +529,28 @@ class FileTools {
 
     if (fid == NULL) return false;
 
-    fwrite(datFile.data, sizeof(unsigned char), datFile.size, fid);
+    fwrite(datFile.data, sizeof(uint8_t), datFile.size, fid);
 
     fclose(fid);
 
     return true;
   }
 
-  bool appendWriteDataToDatFile(const string &datFilePath, unsigned char *data,
+  bool appendWriteDataToDatFile(const string &datFilePath, uint8_t *data,
                                 const int &size) {
     FILE *fid = fopen(datFilePath.c_str(), "ab");
 
     if (fid == NULL) return false;
 
-    fwrite(data, sizeof(unsigned char), size, fid);
+    fwrite(data, sizeof(uint8_t), size, fid);
 
     fclose(fid);
 
     return true;
   }
 
-  bool saveDatFileExt(const string &fileName, unsigned char *extData,
-                      const int &extDataSize, unsigned char *data,
+  bool saveDatFileExt(const string &fileName, uint8_t *extData,
+                      const int &extDataSize, uint8_t *data,
                       const int &dataSize) {
     if (!pathExists(getCurrentDirectory(fileName)))
       createDirectory(getCurrentDirectory(fileName));
@@ -560,10 +560,10 @@ class FileTools {
     if (fid == NULL) return false;
 
     if (extData != nullptr && extDataSize != 0) {
-      fwrite(extData, sizeof(unsigned char), extDataSize, fid);
+      fwrite(extData, sizeof(uint8_t), extDataSize, fid);
     }
 
-    fwrite(data, sizeof(unsigned char), dataSize, fid);
+    fwrite(data, sizeof(uint8_t), dataSize, fid);
 
     fclose(fid);
 
@@ -571,11 +571,11 @@ class FileTools {
   }
 
   bool saveOutputData(int *extData, const int &extDataCount,
-                      const string &absoluteFilePath, unsigned char *data,
+                      const string &absoluteFilePath, uint8_t *data,
                       const int &dataSize) {
     const int extDataSize = extDataCount * sizeof(int);
-    return saveDatFileExt(absoluteFilePath, (unsigned char *)extData,
-                          extDataSize, data, dataSize);
+    return saveDatFileExt(absoluteFilePath, (uint8_t *)extData, extDataSize,
+                          data, dataSize);
   }
 
 #pragma endregion
