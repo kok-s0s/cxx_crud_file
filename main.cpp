@@ -37,34 +37,6 @@ TEST(path, getCurrentDirectory) {
             "C:/home/kok-s0s/cxx_curd_file_unix");
 }
 
-TEST(path, mergePathArgs_String) {
-#define FOLDER "project"
-
-  string arg_01 = "C:";
-  string arg_02 = "home";
-  string arg_03 = "kok-s0s";
-
-  EXPECT_EQ(fileTools.mergePathArgs(arg_01, arg_02, arg_03,
-                                    "cxx_curd_file_unix", "main.cpp"),
-            "C:/home/kok-s0s/cxx_curd_file_unix/main.cpp");
-
-  EXPECT_EQ(fileTools.mergePathArgs("C:", "home", arg_03, FOLDER,
-                                    "cxx_curd_file_unix", "main.cpp"),
-            "C:/home/kok-s0s/project/cxx_curd_file_unix/main.cpp");
-}
-
-TEST(path, mergePathArgs_Int) {
-  string arg_01 = "C:";
-  string arg_02 = "home";
-  int arg_03 = 1;
-  string arg_03_str = std::to_string(arg_03);
-
-  string path =
-      fileTools.mergePathArgs(arg_01, arg_02, arg_03_str, "0219", "main.cpp");
-
-  EXPECT_EQ(path, "C:/home/1/0219/main.cpp");
-}
-
 TEST(path, pathExists) {
   string path_01 = fileTools.getCurrentDirectory() + "/files_test/test_01.txt";
   string path_02 = fileTools.getCurrentDirectory() + "/files_test/test_10.txt";

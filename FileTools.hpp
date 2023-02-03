@@ -183,31 +183,6 @@ class FileTools {
     return path.substr(0, path.find_last_of('/'));
   }
 
-  string mergePathArgs(string arg) { return arg.append("/"); }
-
-  string mergePathArgs(const char *arg) {
-    string temp = arg;
-    return temp.append("/");
-  }
-
-  template <typename... T>
-  string mergePathArgs(const string &arg, T &...args) {
-    string path;
-    path = mergePathArgs(arg);
-    path += mergePathArgs(args...);
-    if (path[path.size() - 1] == '/') path.pop_back();
-    return path;
-  }
-
-  template <typename... T>
-  string mergePathArgs(const char *arg, T &...args) {
-    string path;
-    path = mergePathArgs(arg);
-    path += mergePathArgs(args...);
-    if (path[path.size() - 1] == '/') path.pop_back();
-    return path;
-  }
-
   bool pathExists(const string &path) {
     struct stat buffer;
     return (stat(path.c_str(), &buffer) == 0);
