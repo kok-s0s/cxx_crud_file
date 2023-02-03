@@ -630,14 +630,14 @@ TEST(bmpFile, copyBmpFile) {
 
 #pragma endregion
 
-#pragma region String
+#pragma region UString
 
 TEST(string, args_string) {
   string arg_01 = "test";
   string arg_02 = "folder";
   string arg_03 = "cpp";
 
-  string path = String("C:/home/%1/%2/%3/hello.c")
+  string path = UString("C:/home/%1/%2/%3/hello.c")
                     .args(arg_01)
                     .args(arg_02)
                     .args(arg_03)
@@ -651,7 +651,7 @@ TEST(string, args_int) {
   int arg_02 = 1;
   string arg_03 = "text";
 
-  string path = String("C:/home/%1/%2/%3.txt")
+  string path = UString("C:/home/%1/%2/%3.txt")
                     .args(arg_01)
                     .args(arg_02)
                     .args(arg_03)
@@ -665,9 +665,21 @@ TEST(string, args_loop) {
   int arg_02 = 1;
 
   string path =
-      String("C:/home/%1/%2/%3.txt").args(arg_01, arg_02, "text").to_string();
+      UString("C:/home/%1/%2/%3.txt").args(arg_01, arg_02, "text").to_string();
 
   EXPECT_EQ(path, "C:/home/test/1/text.txt");
+}
+
+TEST(string, args_define) {
+  string arg_01 = "test";
+  int arg_02 = 1;
+#define HOME "home"
+
+  string path = UString("C:/%1/%2/%3/%4/%5.txt")
+                    .args(HOME, arg_01, arg_02, "default", "text")
+                    .to_string();
+
+  EXPECT_EQ(path, "C:/home/test/1/default/text.txt");
 }
 
 #pragma endregion

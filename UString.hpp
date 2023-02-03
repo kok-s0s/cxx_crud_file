@@ -9,15 +9,15 @@ using std::smatch;
 using std::string;
 using std::to_string;
 
-class String {
+class UString {
  private:
   string _content;
 
  public:
-  String(string content) { _content = content; }
-  ~String() {}
+  UString(string content) { _content = content; }
+  ~UString() {}
 
-  String args(string substitution) {
+  UString args(string substitution) {
     string upToDateContent = "";
     string suffix = "";
 
@@ -43,10 +43,10 @@ class String {
 
     upToDateContent += suffix;
 
-    return String(upToDateContent);
+    return UString(upToDateContent);
   }
 
-  String args(const char *substitution) {
+  UString args(const char *substitution) {
     string upToDateContent = "";
     string suffix = "";
 
@@ -72,11 +72,11 @@ class String {
 
     upToDateContent += suffix;
 
-    return String(upToDateContent);
+    return UString(upToDateContent);
   }
 
   template <typename T>
-  String args(T substitution) {
+  UString args(T substitution) {
     string upToDateContent = "";
     string suffix = "";
 
@@ -102,12 +102,12 @@ class String {
 
     upToDateContent += suffix;
 
-    return String(upToDateContent);
+    return UString(upToDateContent);
   }
 
   template <class T, class... Args>
-  String args(T head, Args... rest) {
-    String result(_content);
+  UString args(T head, Args... rest) {
+    UString result(_content);
     result = result.args(head);
     result = result.args(rest...);
     return result;
