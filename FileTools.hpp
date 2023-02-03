@@ -224,7 +224,7 @@ class FileTools {
     file.open(txtFile.path, ios::in);
 
     if (file.is_open()) {
-      while (getline(file, ln)) txtFile.data += (ln + "\n");
+      while (getline(file, ln)) txtFile.data += ln;
 
       file.close();
 
@@ -233,14 +233,13 @@ class FileTools {
       return false;
   }
 
-  bool writeDataToTxtFile(TxtFile &txtFile, string data) {
+  bool writeDataToTxtFile(TxtFile &txtFile) {
     fstream file;
 
     file.open(txtFile.path, ios::out);
 
     if (file.is_open()) {
-      file << data;
-      txtFile.data = data;
+      file << txtFile.data;
 
       file.close();
 

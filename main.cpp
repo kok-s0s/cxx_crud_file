@@ -83,7 +83,7 @@ TEST(txtFile_Test, readTxtFileLine) {
       fileTools.getCurrentDirectory() + "/files_test/test_01.txt";
 
   EXPECT_EQ(fileTools.readTxtFileLine(txt_test_01), true);
-  EXPECT_EQ(txt_test_01.data, "kok-s0s\ni like code.\n");
+  EXPECT_EQ(txt_test_01.data, "kok-s0si like code.");
 }
 
 TEST(txtFile_Test, writeDataToTxtFile) {
@@ -91,9 +91,9 @@ TEST(txtFile_Test, writeDataToTxtFile) {
   txt_test_02.path =
       fileTools.getCurrentDirectory() + "/files_test/test_02.txt";
 
-  std::string data = "hei\nare you ok?\n";
+  txt_test_02.data = "hei\nare you ok?\n";
 
-  EXPECT_EQ(fileTools.writeDataToTxtFile(txt_test_02, data), true);
+  EXPECT_EQ(fileTools.writeDataToTxtFile(txt_test_02), true);
   EXPECT_EQ(txt_test_02.data, "hei\nare you ok?\n");
 }
 
