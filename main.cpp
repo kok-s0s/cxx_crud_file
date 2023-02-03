@@ -612,8 +612,7 @@ TEST(string, args_string) {
   string path = UString("C:/home/%1/%2/%3/hello.c")
                     .args(arg_01)
                     .args(arg_02)
-                    .args(arg_03)
-                    .to_string();
+                    .args(arg_03);
 
   EXPECT_EQ(path, "C:/home/test/folder/cpp/hello.c");
 }
@@ -623,11 +622,8 @@ TEST(string, args_int) {
   int arg_02 = 1;
   string arg_03 = "text";
 
-  string path = UString("C:/home/%1/%2/%3.txt")
-                    .args(arg_01)
-                    .args(arg_02)
-                    .args(arg_03)
-                    .to_string();
+  string path =
+      UString("C:/home/%1/%2/%3.txt").args(arg_01).args(arg_02).args(arg_03);
 
   EXPECT_EQ(path, "C:/home/test/1/text.txt");
 }
@@ -636,8 +632,7 @@ TEST(string, args_loop) {
   string arg_01 = "test";
   int arg_02 = 1;
 
-  string path =
-      UString("C:/home/%1/%2/%3.txt").args(arg_01, arg_02, "text").to_string();
+  string path = UString("C:/home/%1/%2/%3.txt").args(arg_01, arg_02, "text");
 
   EXPECT_EQ(path, "C:/home/test/1/text.txt");
 }
@@ -648,8 +643,7 @@ TEST(string, args_define) {
 #define HOME "home"
 
   string path = UString("C:/%1/%2/%3/%4/%5.txt")
-                    .args(HOME, arg_01, arg_02, "default", "text")
-                    .to_string();
+                    .args(HOME, arg_01, arg_02, "default", "text");
 
   EXPECT_EQ(path, "C:/home/test/1/default/text.txt");
 }

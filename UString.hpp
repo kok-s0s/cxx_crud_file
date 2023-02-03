@@ -46,7 +46,7 @@ class UString {
     return UString(upToDateContent);
   }
 
-  UString args(const char *substitution) {
+  UString args(const char* substitution) {
     string upToDateContent = "";
     string suffix = "";
 
@@ -113,7 +113,9 @@ class UString {
     return result;
   }
 
-  string to_string() { return _content; }
+  operator string() { return _content; }
+
+  const char* c_str() { return _content.c_str(); }
 };
 
 #endif  // USTRING_H_
