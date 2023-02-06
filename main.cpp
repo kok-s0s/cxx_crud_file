@@ -73,17 +73,6 @@ TEST(txt, write_data_to_txt) {
   EXPECT_EQ(txt_test_02.data, "hei\nare you ok?\n");
 }
 
-TEST(txt, copy_txt) {
-  TxtFile txt_test_01;
-  txt_test_01.path =
-      fileTools.getCurrentDirectory() + "/files_test/test_01.txt";
-
-  string txt_test_copy_path =
-      fileTools.getCurrentDirectory() + "/files_test/test_copy.txt";
-
-  EXPECT_EQ(fileTools.copy(txt_test_01.path, txt_test_copy_path), true);
-}
-
 #pragma endregion
 
 #pragma region ini
@@ -613,6 +602,46 @@ TEST(bmp, copy_bmp) {
   BMP bmpObject_copy(copy_bmp_file.c_str());
   EXPECT_EQ(bmpObject_copy.bmp_info_header.height, 256);
   EXPECT_EQ(bmpObject_copy.bmp_info_header.width, 128);
+}
+
+#pragma endregion
+
+#pragma region common
+
+TEST(common, copy) {
+  string txt_path = fileTools.getCurrentDirectory() + "/files_test/test_01.txt";
+  string copy_txt_path =
+      fileTools.getCurrentDirectory() + "/files_test/copy_test_01.txt";
+
+  EXPECT_EQ(fileTools.copy(txt_path, copy_txt_path), true);
+
+  string ini_path =
+      fileTools.getCurrentDirectory() + "/files_test/ini_test_01.ini";
+  string copy_ini_path =
+      fileTools.getCurrentDirectory() + "/files_test/copy_ini_test_01.ini";
+
+  EXPECT_EQ(fileTools.copy(ini_path, copy_ini_path), true);
+
+  string json_path =
+      fileTools.getCurrentDirectory() + "/files_test/json_test.json";
+  string copy_json_path =
+      fileTools.getCurrentDirectory() + "/files_test/copy_json_test.json";
+
+  EXPECT_EQ(fileTools.copy(json_path, copy_json_path), true);
+
+  string dat_path =
+      fileTools.getCurrentDirectory() + "/files_test/dat_test.dat";
+  string copy_dat_path =
+      fileTools.getCurrentDirectory() + "/files_test/copy_dat_test.json";
+
+  EXPECT_EQ(fileTools.copy(dat_path, copy_dat_path), true);
+
+  string bmp_path =
+      fileTools.getCurrentDirectory() + "/files_test/bmp_test_01.bmp";
+  string copy_bmp_path =
+      fileTools.getCurrentDirectory() + "/files_test/copy_bmp_test_01.bmp";
+
+  EXPECT_EQ(fileTools.copy(bmp_path, copy_bmp_path), true);
 }
 
 #pragma endregion

@@ -188,35 +188,6 @@ class FileTools {
       return false;
   }
 
-  bool copy(string txtFileSourcePath, string txtFileTargetPath) {
-    string sourceData;
-    fstream sourceFile;
-
-    sourceFile.open(txtFileSourcePath, ios::in);
-
-    if (sourceFile.is_open()) {
-      std::istreambuf_iterator<char> beg(sourceFile), end;
-      string str(beg, end);
-      sourceData = str;
-
-      sourceFile.close();
-    } else
-      return false;
-
-    fstream targetFile;
-
-    targetFile.open(txtFileTargetPath, ios::out);
-
-    if (targetFile.is_open()) {
-      targetFile << sourceData;
-
-      targetFile.close();
-    } else
-      return false;
-
-    return true;
-  }
-
 #pragma endregion
 
 #pragma region ini
@@ -548,6 +519,45 @@ class FileTools {
 #pragma region bmp
 
   // TODO obligate
+
+#pragma endregion
+
+#pragma region common
+
+  bool copy(string sourcePath, string targetPath) {
+    std::ifstream src(sourcePath.c_str(), std::ios::binary);
+    std::ofstream dst(targetPath.c_str(), std::ios::binary);
+
+    dst << src.rdbuf();
+
+    // FILE *sourceFid = fopen(sourcePath.c_str(), "rb");
+
+    // if (sourceFid == NULL) return false;
+
+    // fseek(sourceFid, 0, SEEK_END);
+    // long lSize = ftell(sourceFid);
+    // rewind(sourceFid);
+
+    // int num = lSize / sizeof(uint8_t);
+    // char *pos = (char *)malloc(sizeof(unsigned char) * num);
+
+    // if (pos == NULL) return false;
+
+    // size_t temp = fread(pos, sizeof(uint8_t), num, sourceFid);
+
+    // fclose(sourceFid);
+
+    // FILE *targetFid = fopen(targetPath.c_str(), "wb");
+
+    // if (targetFid == NULL) return false;
+
+    // fwrite(pos, sizeof(uint8_t), num, targetFid);
+
+    // free(pos);
+    // fclose(targetFid);
+
+    return true;
+  }
 
 #pragma endregion
 };
