@@ -528,33 +528,9 @@ class FileTools {
     std::ifstream src(sourcePath.c_str(), std::ios::binary);
     std::ofstream dst(targetPath.c_str(), std::ios::binary);
 
+    if (!src.is_open() || !dst.is_open()) return false;
+
     dst << src.rdbuf();
-
-    // FILE *sourceFid = fopen(sourcePath.c_str(), "rb");
-
-    // if (sourceFid == NULL) return false;
-
-    // fseek(sourceFid, 0, SEEK_END);
-    // long lSize = ftell(sourceFid);
-    // rewind(sourceFid);
-
-    // int num = lSize / sizeof(uint8_t);
-    // char *pos = (char *)malloc(sizeof(unsigned char) * num);
-
-    // if (pos == NULL) return false;
-
-    // size_t temp = fread(pos, sizeof(uint8_t), num, sourceFid);
-
-    // fclose(sourceFid);
-
-    // FILE *targetFid = fopen(targetPath.c_str(), "wb");
-
-    // if (targetFid == NULL) return false;
-
-    // fwrite(pos, sizeof(uint8_t), num, targetFid);
-
-    // free(pos);
-    // fclose(targetFid);
 
     return true;
   }
