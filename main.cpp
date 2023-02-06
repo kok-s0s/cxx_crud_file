@@ -604,7 +604,7 @@ TEST(bmpFile, copyBmpFile) {
 
 #pragma region UString
 
-TEST(string, args_string) {
+TEST(uString, stringArgs) {
   string arg_01 = "test";
   string arg_02 = "folder";
   string arg_03 = "cpp";
@@ -617,7 +617,7 @@ TEST(string, args_string) {
   EXPECT_EQ(path, "C:/home/test/folder/cpp/hello.c");
 }
 
-TEST(string, args_int) {
+TEST(uString, intArgs) {
   string arg_01 = "test";
   int arg_02 = 1;
   string arg_03 = "text";
@@ -628,7 +628,7 @@ TEST(string, args_int) {
   EXPECT_EQ(path, "C:/home/test/1/text.txt");
 }
 
-TEST(string, args_loop) {
+TEST(uString, loopArgs) {
   string arg_01 = "test";
   int arg_02 = 1;
 
@@ -637,7 +637,7 @@ TEST(string, args_loop) {
   EXPECT_EQ(path, "C:/home/test/1/text.txt");
 }
 
-TEST(string, args_define) {
+TEST(uString, defineArgs) {
   string arg_01 = "test";
   int arg_02 = 1;
 #define HOME "home"
