@@ -156,14 +156,15 @@ class FileTools {
 
 #pragma region txt
 
-  bool readTxtFileLine(TxtFile &txtFile) {
-    string ln;
+  bool readDataFromTxtFile(TxtFile &txtFile) {
     fstream file;
 
     file.open(txtFile.path, ios::in);
 
     if (file.is_open()) {
-      while (getline(file, ln)) txtFile.data += ln;
+      std::istreambuf_iterator<char> beg(file), end;
+      string str(beg, end);
+      txtFile.data = str;
 
       file.close();
 

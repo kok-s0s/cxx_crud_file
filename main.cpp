@@ -49,13 +49,13 @@ TEST(path, pathExists) {
 
 #pragma region txtTest
 
-TEST(txtFile, readTxtFileLine) {
+TEST(txtFile, readDataFromTxtFile) {
   TxtFile txt_test_01;
   txt_test_01.path =
       fileTools.getCurrentDirectory() + "/files_test/test_01.txt";
 
-  EXPECT_EQ(fileTools.readTxtFileLine(txt_test_01), true);
-  EXPECT_EQ(txt_test_01.data, "kok-s0si like code.");
+  EXPECT_EQ(fileTools.readDataFromTxtFile(txt_test_01), true);
+  EXPECT_EQ(txt_test_01.data, "kok-s0s\ni like code.\n");
 }
 
 TEST(txtFile, writeDataToTxtFile) {
