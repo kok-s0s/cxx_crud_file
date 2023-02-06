@@ -358,7 +358,7 @@ class FileTools {
 
 #pragma region json
 
-  bool readDataFromJsonFile(JsonFile &jsonFile) {
+  bool jsonSetup(JsonFile &jsonFile) {
     fstream file;
 
     file.open(jsonFile.path, ios::in);

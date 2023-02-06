@@ -7,9 +7,9 @@
 
 FileTools fileTools;
 
-#pragma region path
+#pragma region directory
 
-TEST(path, createDirectory) {
+TEST(directory, create_directory) {
   string currentDirectory = fileTools.getCurrentDirectory();
   string newDir = currentDirectory + "/files_test/hello";
 
@@ -18,7 +18,7 @@ TEST(path, createDirectory) {
   EXPECT_EQ(fileTools.pathExists(newDir), true);
 }
 
-TEST(path, deleteDirectory) {
+TEST(directory, delete_directory) {
   string currentDirectory = fileTools.getCurrentDirectory();
   string newDir = currentDirectory + "/files_test/hello_d";
 
@@ -31,13 +31,17 @@ TEST(path, deleteDirectory) {
   EXPECT_EQ(fileTools.pathExists(newDir), false);
 }
 
-TEST(path, getCurrentDirectory) {
+TEST(directory, get_current_directory) {
   EXPECT_EQ(fileTools.getCurrentDirectory(
                 "C:/home/kok-s0s/cxx_curd_file_unix/main.cpp"),
             "C:/home/kok-s0s/cxx_curd_file_unix");
 }
 
-TEST(path, pathExists) {
+#pragma endregion
+
+#pragma region path
+
+TEST(path, is_path_exist) {
   string path_01 = fileTools.getCurrentDirectory() + "/files_test/test_01.txt";
   string path_02 = fileTools.getCurrentDirectory() + "/files_test/test_10.txt";
 
@@ -47,9 +51,9 @@ TEST(path, pathExists) {
 
 #pragma endregion
 
-#pragma region txtTest
+#pragma region txt
 
-TEST(txtFile, readDataFromTxtFile) {
+TEST(txt, read_data_from_txt) {
   TxtFile txt_test_01;
   txt_test_01.path =
       fileTools.getCurrentDirectory() + "/files_test/test_01.txt";
@@ -58,7 +62,7 @@ TEST(txtFile, readDataFromTxtFile) {
   EXPECT_EQ(txt_test_01.data, "kok-s0s\ni like code.\n");
 }
 
-TEST(txtFile, writeDataToTxtFile) {
+TEST(txt, write_data_to_txt) {
   TxtFile txt_test_02;
   txt_test_02.path =
       fileTools.getCurrentDirectory() + "/files_test/test_02.txt";
@@ -69,7 +73,7 @@ TEST(txtFile, writeDataToTxtFile) {
   EXPECT_EQ(txt_test_02.data, "hei\nare you ok?\n");
 }
 
-TEST(txtFile, copy) {
+TEST(txt, copy_txt) {
   TxtFile txt_test_01;
   txt_test_01.path =
       fileTools.getCurrentDirectory() + "/files_test/test_01.txt";
@@ -82,9 +86,9 @@ TEST(txtFile, copy) {
 
 #pragma endregion
 
-#pragma region iniTest
+#pragma region ini
 
-TEST(iniFile, iniSetup) {
+TEST(ini, ini_setup) {
   IniFile ini_test_01;
   ini_test_01.path =
       fileTools.getCurrentDirectory() + "/files_test/ini_test_01.ini";
@@ -92,7 +96,7 @@ TEST(iniFile, iniSetup) {
   EXPECT_EQ(fileTools.iniSetup(ini_test_01), true);
 }
 
-TEST(iniFile, getStringFromIni) {
+TEST(ini, get_string_data_from_ini) {
   IniFile ini_test_01;
   ini_test_01.path =
       fileTools.getCurrentDirectory() + "/files_test/ini_test_01.ini";
@@ -112,7 +116,7 @@ TEST(iniFile, getStringFromIni) {
   EXPECT_EQ(str_value_03, "qi");
 }
 
-TEST(iniFile, getIntFromIni) {
+TEST(ini, get_int_data_from_ini) {
   IniFile ini_test_01;
   ini_test_01.path =
       fileTools.getCurrentDirectory() + "/files_test/ini_test_01.ini";
@@ -132,7 +136,7 @@ TEST(iniFile, getIntFromIni) {
   EXPECT_EQ(int_value_03, 19);
 }
 
-TEST(iniFile, getFloatFromIni) {
+TEST(ini, get_float_data_from_ini) {
   IniFile ini_test_01;
   ini_test_01.path =
       fileTools.getCurrentDirectory() + "/files_test/ini_test_01.ini";
@@ -152,7 +156,7 @@ TEST(iniFile, getFloatFromIni) {
   EXPECT_EQ(float_value_03, 22.09f);
 }
 
-TEST(iniFile, getDoubleFromIni) {
+TEST(ini, get_double_data_from_ini) {
   IniFile ini_test_01;
   ini_test_01.path =
       fileTools.getCurrentDirectory() + "/files_test/ini_test_01.ini";
@@ -175,7 +179,7 @@ TEST(iniFile, getDoubleFromIni) {
   EXPECT_EQ(double_value_03, 19.09);
 }
 
-TEST(iniFile, getBoolFromIni) {
+TEST(ini, get_bool_data_from_ini) {
   IniFile ini_test_01;
   ini_test_01.path =
       fileTools.getCurrentDirectory() + "/files_test/ini_test_01.ini";
@@ -195,7 +199,7 @@ TEST(iniFile, getBoolFromIni) {
   EXPECT_EQ(bool_value_03, true);
 }
 
-TEST(iniFile, getArrayIntFromIni) {
+TEST(ini, get_array_int_data_from_ini) {
   IniFile ini_test_01;
   ini_test_01.path =
       fileTools.getCurrentDirectory() + "/files_test/ini_test_01.ini";
@@ -221,7 +225,7 @@ TEST(iniFile, getArrayIntFromIni) {
   }
 }
 
-TEST(iniFile, getArrayFloatFromIni) {
+TEST(ini, get_array_float_data_from_ini) {
   IniFile ini_test_01;
   ini_test_01.path =
       fileTools.getCurrentDirectory() + "/files_test/ini_test_01.ini";
@@ -248,7 +252,7 @@ TEST(iniFile, getArrayFloatFromIni) {
   }
 }
 
-TEST(iniFile, getArrayDoubleFromIni) {
+TEST(ini, get_array_double_from_ini) {
   IniFile ini_test_01;
   ini_test_01.path =
       fileTools.getCurrentDirectory() + "/files_test/ini_test_01.ini";
@@ -274,7 +278,7 @@ TEST(iniFile, getArrayDoubleFromIni) {
   }
 }
 
-TEST(iniFile, getFromIni_False) {
+TEST(ini, get_data_from_ini_false_case) {
   IniFile ini_test_03;
   ini_test_03.path =
       fileTools.getCurrentDirectory() + "/files_test/no_find.ini";
@@ -291,7 +295,7 @@ TEST(iniFile, getFromIni_False) {
   EXPECT_EQ(int_value_02, 22);
 }
 
-TEST(iniFile, setToIni) {
+TEST(ini, set_data_to_ini) {
   IniFile ini_test_02;
   ini_test_02.path =
       fileTools.getCurrentDirectory() + "/files_test/ini_test_02.ini";
@@ -310,7 +314,7 @@ TEST(iniFile, setToIni) {
   }
 }
 
-TEST(iniFile, setArrayToIni) {
+TEST(ini, set_array_data_to_ini) {
   IniFile ini_test_02;
   ini_test_02.path =
       fileTools.getCurrentDirectory() + "/files_test/ini_test_02.ini";
@@ -333,17 +337,17 @@ TEST(iniFile, setArrayToIni) {
 
 #pragma endregion
 
-#pragma region jsonTest
+#pragma region json
 
-TEST(jsonFile, readDataFromJsonFile) {
+TEST(json, json_setup) {
   JsonFile json_test;
   json_test.path =
       fileTools.getCurrentDirectory() + "/files_test/json_test.json";
 
-  EXPECT_EQ(fileTools.readDataFromJsonFile(json_test), true);
+  EXPECT_EQ(fileTools.jsonSetup(json_test), true);
 }
 
-TEST(jsonFile, getFromJson) {
+TEST(json, get_data_from_json) {
   JsonFile json_test;
   json_test.path =
       fileTools.getCurrentDirectory() + "/files_test/json_test.json";
@@ -356,7 +360,7 @@ TEST(jsonFile, getFromJson) {
   bool depth_json_value_bool;
   std::string depth_json_value_string;
 
-  EXPECT_EQ(fileTools.readDataFromJsonFile(json_test), true);
+  EXPECT_EQ(fileTools.jsonSetup(json_test), true);
 
   fileTools.getFromJson(json_test, "encoding", json_value_string, "kkkkk");
   fileTools.getFromJson(json_test, "int", json_value_int, 19);
@@ -377,7 +381,7 @@ TEST(jsonFile, getFromJson) {
   EXPECT_EQ(depth_json_value_string, "ekoko");
 }
 
-TEST(jsonFile, getStringArrFromJsonData) {
+TEST(json, get_array_string_data_from_json) {
   JsonFile json_test;
   json_test.path =
       fileTools.getCurrentDirectory() + "/files_test/json_test.json";
@@ -387,7 +391,7 @@ TEST(jsonFile, getStringArrFromJsonData) {
   std::string json_default_value[] = {"java", "c#", "php"};
   int size = 3;
 
-  EXPECT_EQ(fileTools.readDataFromJsonFile(json_test), true);
+  EXPECT_EQ(fileTools.jsonSetup(json_test), true);
   fileTools.getFromJson(json_test, "plug-ins", json_value, json_default_value,
                         size);
 
@@ -396,7 +400,7 @@ TEST(jsonFile, getStringArrFromJsonData) {
   }
 }
 
-TEST(jsonFile, getIntArrFromJsonData) {
+TEST(json, get_array_int_data_from_json) {
   JsonFile json_test;
   json_test.path =
       fileTools.getCurrentDirectory() + "/files_test/json_test.json";
@@ -406,7 +410,7 @@ TEST(jsonFile, getIntArrFromJsonData) {
   int json_default_value[] = {3, 2, 1};
   int size = 3;
 
-  EXPECT_EQ(fileTools.readDataFromJsonFile(json_test), true);
+  EXPECT_EQ(fileTools.jsonSetup(json_test), true);
   fileTools.getFromJson(json_test, "indent.int_arr", json_value,
                         json_default_value, size);
 
@@ -415,7 +419,7 @@ TEST(jsonFile, getIntArrFromJsonData) {
   }
 }
 
-TEST(jsonFile, getDoubleArrFromJsonData) {
+TEST(json, get_array_double_data_from_json) {
   JsonFile json_test;
   json_test.path =
       fileTools.getCurrentDirectory() + "/files_test/json_test.json";
@@ -425,7 +429,7 @@ TEST(jsonFile, getDoubleArrFromJsonData) {
   double json_default_value[] = {3.11, 2.11, 1.11};
   int size = 3;
 
-  EXPECT_EQ(fileTools.readDataFromJsonFile(json_test), true);
+  EXPECT_EQ(fileTools.jsonSetup(json_test), true);
   fileTools.getFromJson(json_test, "indent.double_arr", json_value,
                         json_default_value, size);
 
@@ -434,7 +438,7 @@ TEST(jsonFile, getDoubleArrFromJsonData) {
   }
 }
 
-TEST(jsonFile, getFromJson_False) {
+TEST(json, get_data_from_Json_false_case) {
   JsonFile json_test;
   json_test.path =
       fileTools.getCurrentDirectory() + "/files_test/json_false.json";
@@ -451,7 +455,7 @@ TEST(jsonFile, getFromJson_False) {
   std::string json_default_value[] = {"java", "c#", "php"};
   int size = 3;
 
-  EXPECT_EQ(fileTools.readDataFromJsonFile(json_test), false);
+  EXPECT_EQ(fileTools.jsonSetup(json_test), false);
 
   fileTools.getFromJson(json_test, "encoding", json_value_string, "kkkkk");
   fileTools.getFromJson(json_test, "int", json_value_int, 19);
@@ -478,7 +482,7 @@ TEST(jsonFile, getFromJson_False) {
   }
 }
 
-TEST(jsonFile, setToJson) {
+TEST(json, set_data_to_json) {
   JsonFile store_json;
   store_json.path =
       fileTools.getCurrentDirectory() + "/files_test/store_json.json";
@@ -502,16 +506,16 @@ TEST(jsonFile, setToJson) {
 
 #pragma endregion
 
-#pragma region datTest
+#pragma region dat
 
-TEST(datFile, readDatFile) {
+TEST(dat, read_data_from_dat) {
   DatFile dat_test;
   dat_test.path = fileTools.getCurrentDirectory() + "/files_test/dat_test.dat";
 
   EXPECT_EQ(fileTools.readDatFile(dat_test), true);
 }
 
-TEST(datFile, readDatFileToPtr) {
+TEST(dat, read_data_from_dat_and_set_to_pointer_variable) {
   string datFilePath =
       fileTools.getCurrentDirectory() + "/files_test/dat_test.dat";
 
@@ -525,7 +529,7 @@ TEST(datFile, readDatFileToPtr) {
   }
 }
 
-TEST(datFile, writeDataToDatFile) {
+TEST(dat, write_data_to_dat) {
   DatFile dat_test;
   dat_test.path = fileTools.getCurrentDirectory() + "/files_test/dat_test.dat";
 
@@ -537,7 +541,7 @@ TEST(datFile, writeDataToDatFile) {
   }
 }
 
-TEST(datFile, writeDataToDatFile_Twice) {
+TEST(dat, append_write_data_to_dat) {
   DatFile dat_test;
   dat_test.path = fileTools.getCurrentDirectory() + "/files_test/dat_test.dat";
 
@@ -553,7 +557,7 @@ TEST(datFile, writeDataToDatFile_Twice) {
   }
 }
 
-TEST(datFile, saveOutputData) {
+TEST(dat, save_output_data_to_dat) {
   string datFilePath =
       fileTools.getCurrentDirectory() + "/files_test/dat_test.dat";
 
@@ -576,9 +580,9 @@ TEST(datFile, saveOutputData) {
 
 #pragma endregion
 
-#pragma region bmpTest
+#pragma region bmp
 
-TEST(bmpFile, readBmpFile) {
+TEST(bmp, read_data_from_bmp) {
   BmpFile bmp_test_01;
   BmpFile bmp_test_02;
   bmp_test_01.path =
@@ -595,7 +599,7 @@ TEST(bmpFile, readBmpFile) {
   EXPECT_EQ(bmpObject_02.bmp_info_header.width, 16);
 }
 
-TEST(bmpFile, copyBmpFile) {
+TEST(bmp, copy_bmp) {
   BmpFile bmp_test_01;
   bmp_test_01.path =
       fileTools.getCurrentDirectory() + "/files_test/bmp_test_01.bmp";
@@ -615,7 +619,7 @@ TEST(bmpFile, copyBmpFile) {
 
 #pragma region UString
 
-TEST(uString, stringArgs) {
+TEST(UString, use_string_as_params) {
   string arg_01 = "test";
   string arg_02 = "folder";
   string arg_03 = "cpp";
@@ -628,7 +632,7 @@ TEST(uString, stringArgs) {
   EXPECT_EQ(path, "C:/home/test/folder/cpp/hello.c");
 }
 
-TEST(uString, intArgs) {
+TEST(UString, use_int_as_params) {
   string arg_01 = "test";
   int arg_02 = 1;
   string arg_03 = "text";
@@ -639,16 +643,7 @@ TEST(uString, intArgs) {
   EXPECT_EQ(path, "C:/home/test/1/text.txt");
 }
 
-TEST(uString, loopArgs) {
-  string arg_01 = "test";
-  int arg_02 = 1;
-
-  string path = UString("C:/home/%1/%2/%3.txt").args(arg_01, arg_02, "text");
-
-  EXPECT_EQ(path, "C:/home/test/1/text.txt");
-}
-
-TEST(uString, defineArgs) {
+TEST(UString, use_define_variable_as_params) {
   string arg_01 = "test";
   int arg_02 = 1;
 #define HOME "home"
@@ -657,6 +652,15 @@ TEST(uString, defineArgs) {
                     .args(HOME, arg_01, arg_02, "default", "text");
 
   EXPECT_EQ(path, "C:/home/test/1/default/text.txt");
+}
+
+TEST(UString, loop_params) {
+  string arg_01 = "test";
+  int arg_02 = 1;
+
+  string path = UString("C:/home/%1/%2/%3.txt").args(arg_01, arg_02, "text");
+
+  EXPECT_EQ(path, "C:/home/test/1/text.txt");
 }
 
 #pragma endregion
