@@ -188,6 +188,35 @@ class FileTools {
       return false;
   }
 
+  bool copy(string txtFileSourcePath, string txtFileTargetPath) {
+    string sourceData;
+    fstream sourceFile;
+
+    sourceFile.open(txtFileSourcePath, ios::in);
+
+    if (sourceFile.is_open()) {
+      std::istreambuf_iterator<char> beg(sourceFile), end;
+      string str(beg, end);
+      sourceData = str;
+
+      sourceFile.close();
+    } else
+      return false;
+
+    fstream targetFile;
+
+    targetFile.open(txtFileTargetPath, ios::out);
+
+    if (targetFile.is_open()) {
+      targetFile << sourceData;
+
+      targetFile.close();
+    } else
+      return false;
+
+    return true;
+  }
+
 #pragma endregion
 
 #pragma region ini

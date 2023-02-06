@@ -69,6 +69,17 @@ TEST(txtFile, writeDataToTxtFile) {
   EXPECT_EQ(txt_test_02.data, "hei\nare you ok?\n");
 }
 
+TEST(txtFile, copy) {
+  TxtFile txt_test_01;
+  txt_test_01.path =
+      fileTools.getCurrentDirectory() + "/files_test/test_01.txt";
+
+  string txt_test_copy_path =
+      fileTools.getCurrentDirectory() + "/files_test/test_copy.txt";
+
+  EXPECT_EQ(fileTools.copy(txt_test_01.path, txt_test_copy_path), true);
+}
+
 #pragma endregion
 
 #pragma region iniTest
