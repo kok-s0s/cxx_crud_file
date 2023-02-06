@@ -63,10 +63,6 @@ struct BmpFile {
 
 class FileTools {
  public:
-#pragma region handleString
-
-#pragma endregion
-
 #pragma region path
 
   void createDirectory(const string &path) {
