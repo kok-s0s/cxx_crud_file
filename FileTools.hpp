@@ -53,8 +53,7 @@ struct JsonFile {
 
 struct DatFile {
   string path;
-  uint8_t *data;
-  int size;
+  vector<uint8_t> data;
 };
 
 struct BmpFile {
@@ -430,11 +429,15 @@ class FileTools {
     rewind(fid);
 
     int num = lSize / sizeof(uint8_t);
+    char *pos = (char *)malloc(sizeof(uint8_t) * num);
 
-    datFile.size = num;
-    datFile.data = (uint8_t *)malloc(sizeof(uint8_t) * num);
+    if (pos == NULL) return false;
 
-    size_t temp = fread(datFile.data, sizeof(uint8_t), num, fid);
+    size_t temp = fread(pos, sizeof(uint8_t), num, fid);
+
+    for (int i = 0; i < num; ++i) datFile.data.push_back(pos[i]);
+
+    free(pos);
 
     fclose(fid);
 
@@ -465,7 +468,7 @@ class FileTools {
 
     if (fid == NULL) return false;
 
-    fwrite(datFile.data, sizeof(uint8_t), datFile.size, fid);
+    fwrite(&datFile.data[0], sizeof(uint8_t), datFile.data.size(), fid);
 
     fclose(fid);
 

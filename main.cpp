@@ -538,11 +538,12 @@ TEST(dat, append_write_data_to_dat) {
     DatFile dat_test_twice = dat_test;
     dat_test_twice.path =
         fileTools.getCurrentDirectory() + "/files_test/dat_test_twice.dat";
+
     EXPECT_EQ(fileTools.writeDataToDatFile(dat_test_twice), true);
-    EXPECT_EQ(
-        fileTools.appendWriteDataToDatFile(
-            dat_test_twice.path, dat_test_twice.data, dat_test_twice.size),
-        true);
+    EXPECT_EQ(fileTools.appendWriteDataToDatFile(dat_test_twice.path,
+                                                 &dat_test_twice.data[0],
+                                                 dat_test_twice.data.size()),
+              true);
   }
 }
 
