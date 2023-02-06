@@ -23,6 +23,7 @@
 #include <string>
 #include <vector>
 
+#include "UString.hpp"
 #include "bmp/BMP.h"
 #include "ini/SimpleIni.h"
 #include "json/json.hpp"
@@ -63,39 +64,6 @@ struct BmpFile {
 class FileTools {
  public:
 #pragma region handleString
-
-  vector<string> split(const string &data, const string &separator) {
-    vector<string> result;
-    if (data == "") return result;
-
-    char *thisStr = new char[data.length() + 1];
-    char *thisSeparator = new char[separator.length() + 1];
-
-#if defined(_MSC_VER)
-    strcpy_s(thisStr, data.length() + 1, data.c_str());
-    strcpy_s(thisSeparator, separator.length() + 1, separator.c_str());
-
-    char *next_token = NULL;
-    char *token = strtok_s(thisStr, thisSeparator, &next_token);
-    while (token) {
-      string tempStr = token;
-      result.push_back(tempStr);
-      token = strtok_s(NULL, thisSeparator, &next_token);
-    }
-#elif defined(__GNUC__)
-    strcpy(thisStr, data.c_str());
-    strcpy(thisSeparator, separator.c_str());
-
-    char *token = strtok(thisStr, thisSeparator);
-    while (token) {
-      string tempStr = token;
-      result.push_back(tempStr);
-      token = strtok(NULL, thisSeparator);
-    }
-#endif
-
-    return result;
-  }
 
 #pragma endregion
 
