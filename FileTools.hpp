@@ -508,6 +508,19 @@ class FileTools {
     return true;
   }
 
+  bool writeDataToDatFile(const string &datFilePath, uint8_t *data,
+                          const int &size) {
+    FILE *fid = fopen(datFilePath.c_str(), "wb");
+
+    if (fid == NULL) return false;
+
+    fwrite(data, sizeof(uint8_t), size, fid);
+
+    fclose(fid);
+
+    return true;
+  }
+
   bool appendWriteDataToDatFile(const string &datFilePath, uint8_t *data,
                                 const int &size) {
     FILE *fid = fopen(datFilePath.c_str(), "ab");
