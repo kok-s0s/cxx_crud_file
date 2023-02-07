@@ -693,4 +693,12 @@ TEST(UString, loop_params) {
   EXPECT_EQ(path, "C:/home/test/1/text.txt");
 }
 
+TEST(UString, left_value) {
+  string arg_01 = "test";
+  int arg_02 = 1;
+
+  std::cout << UString("C:/home/%1/%2/%3.txt").args(arg_01, arg_02, "text")
+            << std::endl;
+}
+
 #pragma endregion

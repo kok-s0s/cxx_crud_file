@@ -148,6 +148,11 @@ class UString {
     return result;
   }
 
+  friend std::ostream &operator<<(std::ostream &os, const UString &uString) {
+    os << uString._content;
+    return os;
+  }
+
   operator string() { return _content; }
 
   const char *c_str() { return _content.c_str(); }
