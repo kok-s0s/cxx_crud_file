@@ -3,6 +3,7 @@
 #include <iostream>
 
 #include "FileTools.hpp"
+#include "UFile.hpp"
 #include "UString.hpp"
 
 FileTools fileTools;
@@ -17,6 +18,8 @@ TEST(directory, create_directory) {
 
   EXPECT_EQ(fileTools.pathExists(newDir), true);
 }
+
+TEST(directory, create_multi_level_directory) {}
 
 TEST(directory, delete_directory) {
   string currentDirectory = fileTools.getCurrentDirectory();
@@ -700,5 +703,54 @@ TEST(UString, left_value) {
   std::cout << UString("C:/home/%1/%2/%3.txt").args(arg_01, arg_02, "text")
             << std::endl;
 }
+
+#pragma endregion
+
+#pragma region file
+
+TEST(file, exist) {
+  string path_01 = fileTools.getCurrentDirectory() + "/files_test/test_01.txt";
+  string path_02 = fileTools.getCurrentDirectory() + "/files_test/test_10.txt";
+
+  EXPECT_EQ(fs::exists(UFile(path_01).handle()), true);
+  EXPECT_EQ(fs::exists(UFile(path_02).handle()), false);
+}
+
+TEST(file, get_file_size) {
+  fs::path p = fs::current_path() / "example.bin";
+  UFile file = UFile(p);
+
+  std::ofstream(p) << "kok-s0s";  // create file of size 7
+
+  EXPECT_EQ(fs::file_size(file.handle()), 7);
+
+  fs::remove(p);
+}
+
+TEST(file, get_absolute_path) {
+  fs::path p = fs::current_path() / "test.txt";
+  UFile file = UFile(p);
+
+  std::ofstream(p) << "kok-s0s";  // create file of size 7
+
+  EXPECT_EQ(fs::absolute(file.handle()), p);
+}
+
+TEST(file, delete_file) {
+  fs::path p = fs::current_path() / "hello.cpp";
+  UFile file = UFile(p);
+
+  std::ofstream(p) << "world";
+
+  EXPECT_EQ(fs::file_size(file.handle()), 5);
+
+  EXPECT_EQ(fs::remove(p), true);
+}
+
+TEST(file, if_file_exist_then_find_its_father_directory) {}
+
+TEST(file, copy) {}
+
+TEST(file, use_file_as_params) {}
 
 #pragma endregion
