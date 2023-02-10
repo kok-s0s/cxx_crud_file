@@ -1,5 +1,5 @@
-#ifndef USTRING_H_
-#define USTRING_H_
+#ifndef USTRING_HPP_
+#define USTRING_HPP_
 
 #include <regex>
 #include <string>
@@ -125,4 +125,4 @@ class UString {
   const char *c_str() { return _content.c_str(); }
 };
 
-#endif  // USTRING_H_
+#endif  // USTRING_HPP_
