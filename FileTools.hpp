@@ -95,13 +95,13 @@ class FileTools {
   }
 
  public:
-#pragma region path
+#pragma region directory
 
-  void createDirectory(const string &path) {
+  bool createDirectory(const string &path) {
 #if defined(_MSC_VER)
-    _mkdir(path.c_str());
+    return _mkdir(path.c_str()) == 0;
 #elif defined(__GNUC__)
-    mkdir(path.c_str(), 0755);
+    return mkdir(path.c_str(), 0755) == 0;
 #endif
   }
 
@@ -135,7 +135,7 @@ class FileTools {
       _findclose(handle);
     }
 
-    return _rmdir(path.c_str()) == 0 ? true : false;
+    return _rmdir(path.c_str()) == 0;
 
 #elif defined(__GNUC__)
     if (path.at(path.length() - 1) != '\\' || path.at(path.length() - 1) != '/')
@@ -163,7 +163,7 @@ class FileTools {
       closedir(d);
     }
 
-    return rmdir(path.c_str()) == 0 ? true : false;
+    return rmdir(path.c_str()) == 0;
 
 #endif
   }
@@ -178,6 +178,10 @@ class FileTools {
   string getCurrentDirectory(const string &path) {
     return path.substr(0, path.find_last_of('/'));
   }
+
+#pragma endregion
+
+#pragma region path
 
   bool pathExists(const string &path) {
     struct stat buffer;
