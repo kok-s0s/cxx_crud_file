@@ -109,7 +109,7 @@ struct BMP {
       // Here we check if we need to take into account row padding
       if (bmp_info_header.width % 4 == 0) {
         inp.read((char *)data.data(), data.size());
-        file_header.file_size += data.size();
+        file_header.file_size += (uint32_t)data.size();
       } else {
         row_stride = bmp_info_header.width * bmp_info_header.bit_count / 8;
         uint32_t new_stride = make_stride_aligned(4);
@@ -120,7 +120,8 @@ struct BMP {
           inp.read((char *)padding_row.data(), padding_row.size());
         }
         file_header.file_size +=
-            data.size() + bmp_info_header.height * padding_row.size();
+            (uint32_t)data.size() +
+            bmp_info_header.height * (uint32_t)padding_row.size();
       }
     } else {
       throw std::runtime_error("Unable to open the input image file.");
@@ -144,7 +145,7 @@ struct BMP {
       bmp_info_header.compression = 3;
       row_stride = width * 4;
       data.resize(row_stride * height);
-      file_header.file_size = file_header.offset_data + data.size();
+      file_header.file_size = file_header.offset_data + (uint32_t)data.size();
     } else {
       bmp_info_header.size = sizeof(BMPInfoHeader);
       file_header.offset_data = sizeof(BMPFileHeader) + sizeof(BMPInfoHeader);
@@ -156,7 +157,7 @@ struct BMP {
 
       uint32_t new_stride = make_stride_aligned(4);
       file_header.file_size =
-          file_header.offset_data + data.size() +
+          file_header.offset_data + (uint32_t)data.size() +
           bmp_info_header.height * (new_stride - row_stride);
     }
   }

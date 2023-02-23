@@ -5,33 +5,27 @@
 #include <string>
 #include <vector>
 
-using std::regex;
-using std::smatch;
-using std::string;
-using std::to_string;
-using std::vector;
-
 class UString {
  private:
-  string _content;
+  std::string _content;
 
  public:
-  UString(string content) { _content = content; }
+  UString(std::string content) { _content = content; }
   ~UString() {}
 
-  UString args(string substitution) {
-    string upToDateContent = "";
-    string suffix = "";
+  UString args(std::string substitution) {
+    std::string upToDateContent = "";
+    std::string suffix = "";
 
-    regex percentSign("%([1-9]{1})");
+    std::regex percentSign("%([1-9]{1})");
 
     auto content_begin =
         std::sregex_iterator(_content.begin(), _content.end(), percentSign);
     auto content_end = std::sregex_iterator();
 
     for (std::sregex_iterator i = content_begin; i != content_end; ++i) {
-      smatch match = *i;
-      string match_str = match.str();
+      std::smatch match = *i;
+      std::string match_str = match.str();
 
       int index = match_str[1] - '1';
 
@@ -49,18 +43,18 @@ class UString {
   }
 
   UString args(const char *substitution) {
-    string upToDateContent = "";
-    string suffix = "";
+    std::string upToDateContent = "";
+    std::string suffix = "";
 
-    regex percentSign("%([1-9]{1})");
+    std::regex percentSign("%([1-9]{1})");
 
     auto content_begin =
         std::sregex_iterator(_content.begin(), _content.end(), percentSign);
     auto content_end = std::sregex_iterator();
 
     for (std::sregex_iterator i = content_begin; i != content_end; ++i) {
-      smatch match = *i;
-      string match_str = match.str();
+      std::smatch match = *i;
+      std::string match_str = match.str();
 
       int index = match_str[1] - '1';
 
@@ -79,18 +73,18 @@ class UString {
 
   template <typename T>
   UString args(T substitution) {
-    string upToDateContent = "";
-    string suffix = "";
+    std::string upToDateContent = "";
+    std::string suffix = "";
 
-    regex percentSign("%([1-9]{1})");
+    std::regex percentSign("%([1-9]{1})");
 
     auto content_begin =
         std::sregex_iterator(_content.begin(), _content.end(), percentSign);
     auto content_end = std::sregex_iterator();
 
     for (std::sregex_iterator i = content_begin; i != content_end; ++i) {
-      smatch match = *i;
-      string match_str = match.str();
+      std::smatch match = *i;
+      std::string match_str = match.str();
 
       int index = match_str[1] - '1';
 
@@ -120,7 +114,7 @@ class UString {
     return os;
   }
 
-  operator string() { return _content; }
+  operator std::string() { return _content; }
 
   const char *c_str() { return _content.c_str(); }
 };

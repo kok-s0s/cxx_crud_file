@@ -1,202 +1,163 @@
 #include <gtest/gtest.h>
 
+#include <fstream>
 #include <iostream>
+#include <string>
+#include <vector>
 
-#include "FileTools.hpp"
-#include "UFile.hpp"
+#include "BmpFile.hpp"
+#include "DatFile.hpp"
+#include "ImgFile.hpp"
+#include "IniFile.hpp"
+#include "JsonFile.hpp"
+#include "TxtFile.hpp"
 #include "UString.hpp"
+#include "Variant.hpp"
 
-FileTools fileTools;
+using std::cout;
+using std::endl;
+using std::fstream;
+using std::ifstream;
+using std::ios;
+using std::ofstream;
+using std::string;
+using std::to_string;
+using std::vector;
 
-#pragma region directory
+#pragma region TxtFile
 
-TEST(directory, create_directory) {
-  string currentDirectory = fileTools.getCurrentDirectory();
-  string newDir = currentDirectory + "/files_test/hello";
+TEST(txt, read_data) {
+  TxtFile test_01(fs::current_path() / "files_test/test_01.txt");
 
-  if (!fileTools.pathExists(newDir)) fileTools.createDirectory(newDir);
-
-  EXPECT_EQ(fileTools.pathExists(newDir), true);
+  EXPECT_TRUE(test_01.readData());
+  EXPECT_EQ(test_01.getData(), "name\ni like code.\n");
 }
 
-TEST(directory, create_multi_level_directory) {}
+TEST(txt, write_data) {
+  TxtFile test_02(fs::current_path() / "files_test/test_02.txt");
 
-TEST(directory, delete_directory) {
-  string currentDirectory = fileTools.getCurrentDirectory();
-  string newDir = currentDirectory + "/files_test/hello_d";
+  test_02.setData("hei\nare you ok?\n");
 
-  fileTools.createDirectory(newDir);
-
-  EXPECT_EQ(fileTools.pathExists(newDir), true);
-
-  fileTools.deleteDirectory(newDir);
-
-  EXPECT_EQ(fileTools.pathExists(newDir), false);
+  EXPECT_TRUE(test_02.writeData());
+  EXPECT_TRUE(test_02.readData());
+  EXPECT_EQ(test_02.getData(), "hei\nare you ok?\n");
 }
 
-TEST(directory, get_current_directory) {
-  EXPECT_EQ(fileTools.getCurrentDirectory(
-                "C:/home/kok-s0s/cxx_curd_file_unix/main.cpp"),
-            "C:/home/kok-s0s/cxx_curd_file_unix");
-}
+TEST(txt, append_write_data) {
+  TxtFile test_03(fs::current_path() / "files_test/test_03.txt");
 
-#pragma endregion
+  test_03.setData("hello!\n");
 
-#pragma region path
-
-TEST(path, is_path_exist) {
-  string path_01 = fileTools.getCurrentDirectory() + "/files_test/test_01.txt";
-  string path_02 = fileTools.getCurrentDirectory() + "/files_test/test_10.txt";
-
-  EXPECT_EQ(fileTools.pathExists(path_01), true);
-  EXPECT_EQ(fileTools.pathExists(path_02), false);
+  EXPECT_TRUE(test_03.writeData());
+  EXPECT_TRUE(test_03.appendWriteData("hello!\n"));
+  EXPECT_TRUE(test_03.readData());
+  EXPECT_EQ(test_03.getData(), "hello!\nhello!\n");
 }
 
 #pragma endregion
 
-#pragma region txt
-
-TEST(txt, read_data_from_txt) {
-  TxtFile txt_test_01;
-  txt_test_01.path =
-      fileTools.getCurrentDirectory() + "/files_test/test_01.txt";
-
-  EXPECT_EQ(fileTools.readDataFromTxtFile(txt_test_01), true);
-  EXPECT_EQ(txt_test_01.data, "kok-s0s\ni like code.\n");
-}
-
-TEST(txt, write_data_to_txt) {
-  TxtFile txt_test_02;
-  txt_test_02.path =
-      fileTools.getCurrentDirectory() + "/files_test/test_02.txt";
-
-  txt_test_02.data = "hei\nare you ok?\n";
-
-  EXPECT_EQ(fileTools.writeDataToTxtFile(txt_test_02), true);
-  EXPECT_EQ(txt_test_02.data, "hei\nare you ok?\n");
-}
-
-#pragma endregion
-
-#pragma region ini
+#pragma region IniFile
 
 TEST(ini, ini_setup) {
-  IniFile ini_test_01;
-  ini_test_01.path =
-      fileTools.getCurrentDirectory() + "/files_test/ini_test_01.ini";
+  IniFile test_01(fs::current_path() / "files_test/ini_test_01.ini");
 
-  EXPECT_EQ(fileTools.iniSetup(ini_test_01), true);
+  EXPECT_TRUE(test_01.iniSetup());
 }
 
-TEST(ini, get_string_data_from_ini) {
-  IniFile ini_test_01;
-  ini_test_01.path =
-      fileTools.getCurrentDirectory() + "/files_test/ini_test_01.ini";
+TEST(ini, get_string) {
+  IniFile test_01(fs::current_path() / "files_test/ini_test_01.ini");
 
-  EXPECT_EQ(fileTools.iniSetup(ini_test_01), true);
+  EXPECT_TRUE(test_01.iniSetup());
 
-  std::string str_value_01;
-  std::string str_value_02;
-  std::string str_value_03;
+  string str_value_01;
+  string str_value_02;
+  string str_value_03;
 
-  fileTools.getFromIni(ini_test_01, "string", "str1", str_value_01, "qi");
-  fileTools.getFromIni(ini_test_01, "string", "str2", str_value_02, "qi");
-  fileTools.getFromIni(ini_test_01, "string", "str3", str_value_03, "qi");
+  test_01.getFromIni("string", "str1", str_value_01, "qi");
+  test_01.getFromIni("string", "str2", str_value_02, "qi");
+  test_01.getFromIni("string", "str3", str_value_03, "qi");
 
-  EXPECT_EQ(str_value_01, "kok-s0s");
+  EXPECT_EQ(str_value_01, "name");
   EXPECT_EQ(str_value_02, "hello");
   EXPECT_EQ(str_value_03, "qi");
 }
 
-TEST(ini, get_int_data_from_ini) {
-  IniFile ini_test_01;
-  ini_test_01.path =
-      fileTools.getCurrentDirectory() + "/files_test/ini_test_01.ini";
+TEST(ini, get_int) {
+  IniFile test_01(fs::current_path() / "files_test/ini_test_01.ini");
 
-  EXPECT_EQ(fileTools.iniSetup(ini_test_01), true);
+  EXPECT_TRUE(test_01.iniSetup());
 
   int int_value_01;
   int int_value_02;
   int int_value_03;
 
-  fileTools.getFromIni(ini_test_01, "int", "int1", int_value_01, 19);
-  fileTools.getFromIni(ini_test_01, "int", "int2", int_value_02, 19);
-  fileTools.getFromIni(ini_test_01, "int", "int3", int_value_03, 19);
+  test_01.getFromIni("int", "int1", int_value_01, 19);
+  test_01.getFromIni("int", "int2", int_value_02, 19);
+  test_01.getFromIni("int", "int3", int_value_03, 19);
 
   EXPECT_EQ(int_value_01, 11);
   EXPECT_EQ(int_value_02, 8);
   EXPECT_EQ(int_value_03, 19);
 }
 
-TEST(ini, get_float_data_from_ini) {
-  IniFile ini_test_01;
-  ini_test_01.path =
-      fileTools.getCurrentDirectory() + "/files_test/ini_test_01.ini";
+TEST(ini, get_float) {
+  IniFile test_01(fs::current_path() / "files_test/ini_test_01.ini");
 
-  EXPECT_EQ(fileTools.iniSetup(ini_test_01), true);
+  EXPECT_TRUE(test_01.iniSetup());
 
   float float_value_01;
   float float_value_02;
   float float_value_03;
 
-  fileTools.getFromIni(ini_test_01, "float", "float1", float_value_01, 22.09f);
-  fileTools.getFromIni(ini_test_01, "float", "float2", float_value_02, 22.09f);
-  fileTools.getFromIni(ini_test_01, "float", "float3", float_value_03, 22.09f);
+  test_01.getFromIni("float", "float1", float_value_01, 22.09f);
+  test_01.getFromIni("float", "float2", float_value_02, 22.09f);
+  test_01.getFromIni("float", "float3", float_value_03, 22.09f);
 
-  EXPECT_EQ(float_value_01, 33.33f);
-  EXPECT_EQ(float_value_02, 22.22f);
-  EXPECT_EQ(float_value_03, 22.09f);
+  EXPECT_FLOAT_EQ(float_value_01, 33.33f);
+  EXPECT_FLOAT_EQ(float_value_02, 22.22f);
+  EXPECT_FLOAT_EQ(float_value_03, 22.09f);
 }
 
-TEST(ini, get_double_data_from_ini) {
-  IniFile ini_test_01;
-  ini_test_01.path =
-      fileTools.getCurrentDirectory() + "/files_test/ini_test_01.ini";
+TEST(ini, get_double) {
+  IniFile test_01(fs::current_path() / "files_test/ini_test_01.ini");
 
-  EXPECT_EQ(fileTools.iniSetup(ini_test_01), true);
+  EXPECT_TRUE(test_01.iniSetup());
 
   double double_value_01;
   double double_value_02;
   double double_value_03;
 
-  fileTools.getFromIni(ini_test_01, "double", "double1", double_value_01,
-                       19.09);
-  fileTools.getFromIni(ini_test_01, "double", "double2", double_value_02,
-                       19.09);
-  fileTools.getFromIni(ini_test_01, "double", "double3", double_value_03,
-                       19.09);
+  test_01.getFromIni("double", "double1", double_value_01, 19.09);
+  test_01.getFromIni("double", "double2", double_value_02, 19.09);
+  test_01.getFromIni("double", "double3", double_value_03, 19.09);
 
-  EXPECT_EQ(double_value_01, 3.14);
-  EXPECT_EQ(double_value_02, 1.01);
-  EXPECT_EQ(double_value_03, 19.09);
+  EXPECT_DOUBLE_EQ(double_value_01, 3.14);
+  EXPECT_DOUBLE_EQ(double_value_02, 1.01);
+  EXPECT_DOUBLE_EQ(double_value_03, 19.09);
 }
 
-TEST(ini, get_bool_data_from_ini) {
-  IniFile ini_test_01;
-  ini_test_01.path =
-      fileTools.getCurrentDirectory() + "/files_test/ini_test_01.ini";
+TEST(ini, get_bool) {
+  IniFile test_01(fs::current_path() / "files_test/ini_test_01.ini");
 
-  EXPECT_EQ(fileTools.iniSetup(ini_test_01), true);
+  EXPECT_TRUE(test_01.iniSetup());
 
   bool bool_value_01;
   bool bool_value_02;
   bool bool_value_03;
 
-  fileTools.getFromIni(ini_test_01, "bool", "bool1", bool_value_01, false);
-  fileTools.getFromIni(ini_test_01, "bool", "bool2", bool_value_02, true);
-  fileTools.getFromIni(ini_test_01, "bool", "bool3", bool_value_03, true);
+  test_01.getFromIni("bool", "bool1", bool_value_01, false);
+  test_01.getFromIni("bool", "bool2", bool_value_02, true);
+  test_01.getFromIni("bool", "bool3", bool_value_03, true);
 
   EXPECT_EQ(bool_value_01, true);
   EXPECT_EQ(bool_value_02, false);
   EXPECT_EQ(bool_value_03, true);
 }
 
-TEST(ini, get_array_int_data_from_ini) {
-  IniFile ini_test_01;
-  ini_test_01.path =
-      fileTools.getCurrentDirectory() + "/files_test/ini_test_01.ini";
+TEST(ini, get_array_int) {
+  IniFile test_01(fs::current_path() / "files_test/ini_test_01.ini");
 
-  EXPECT_EQ(fileTools.iniSetup(ini_test_01), true);
+  EXPECT_TRUE(test_01.iniSetup());
 
   int array_int[8];
   int array_int_testD[8];
@@ -204,25 +165,22 @@ TEST(ini, get_array_int_data_from_ini) {
   int size = 8;
   int right_array_int[] = {81, 71, 61, 51, 41, 31, 21, 11};
 
-  fileTools.getFromIni(ini_test_01, "array", "arrayInt", array_int,
-                       default_array_int, size);
+  test_01.getFromIni("array", "arrayInt", array_int, default_array_int, size);
   for (int i = 0; i < size; ++i) {
     EXPECT_EQ(array_int[i], right_array_int[i]);
   }
 
-  fileTools.getFromIni(ini_test_01, "array", "arrayInt_testD", array_int_testD,
-                       default_array_int, size);
+  test_01.getFromIni("array", "arrayInt_testD", array_int_testD,
+                     default_array_int, size);
   for (int i = 0; i < size; ++i) {
     EXPECT_EQ(array_int_testD[i], default_array_int[i]);
   }
 }
 
-TEST(ini, get_array_float_data_from_ini) {
-  IniFile ini_test_01;
-  ini_test_01.path =
-      fileTools.getCurrentDirectory() + "/files_test/ini_test_01.ini";
+TEST(ini, get_array_float) {
+  IniFile test_01(fs::current_path() / "files_test/ini_test_01.ini");
 
-  EXPECT_EQ(fileTools.iniSetup(ini_test_01), true);
+  EXPECT_TRUE(test_01.iniSetup());
 
   float array_float[5];
   float array_float_testD[5];
@@ -230,26 +188,24 @@ TEST(ini, get_array_float_data_from_ini) {
   int size = 5;
   float right_array_float[] = {1.1f, 2.1f, 3.1f, 4.1f, 5.1f};
 
-  fileTools.getFromIni(ini_test_01, "array", "arrayFloat", array_float,
-                       default_array_float, size);
+  test_01.getFromIni("array", "arrayFloat", array_float, default_array_float,
+                     size);
   for (int i = 0; i < size; ++i) {
-    EXPECT_EQ(array_float[i], right_array_float[i]);
+    EXPECT_FLOAT_EQ(array_float[i], right_array_float[i]);
   }
 
-  fileTools.getFromIni(ini_test_01, "array", "arrayFloat_testD",
-                       array_float_testD, default_array_float, size);
+  test_01.getFromIni("array", "arrayFloat_testD", array_float_testD,
+                     default_array_float, size);
 
   for (int i = 0; i < size; ++i) {
-    EXPECT_EQ(array_float_testD[i], default_array_float[i]);
+    EXPECT_FLOAT_EQ(array_float_testD[i], default_array_float[i]);
   }
 }
 
-TEST(ini, get_array_double_from_ini) {
-  IniFile ini_test_01;
-  ini_test_01.path =
-      fileTools.getCurrentDirectory() + "/files_test/ini_test_01.ini";
+TEST(ini, get_array_double) {
+  IniFile test_01(fs::current_path() / "files_test/ini_test_01.ini");
 
-  EXPECT_EQ(fileTools.iniSetup(ini_test_01), true);
+  EXPECT_TRUE(test_01.iniSetup());
 
   double array_double[5];
   double array_double_testD[5];
@@ -257,112 +213,94 @@ TEST(ini, get_array_double_from_ini) {
   int size = 5;
   double right_array_double[] = {1.01, 2.01, 3.01, 4.01, 5.01};
 
-  fileTools.getFromIni(ini_test_01, "array", "arrayDouble", array_double,
-                       default_array_double, size);
+  test_01.getFromIni("array", "arrayDouble", array_double, default_array_double,
+                     size);
   for (int i = 0; i < size; ++i) {
-    EXPECT_EQ(array_double[i], right_array_double[i]);
+    EXPECT_DOUBLE_EQ(array_double[i], right_array_double[i]);
   }
 
-  fileTools.getFromIni(ini_test_01, "array", "arrayDouble_testD",
-                       array_double_testD, default_array_double, size);
+  test_01.getFromIni("array", "arrayDouble_testD", array_double_testD,
+                     default_array_double, size);
   for (int i = 0; i < size; ++i) {
-    EXPECT_EQ(array_double_testD[i], default_array_double[i]);
+    EXPECT_DOUBLE_EQ(array_double_testD[i], default_array_double[i]);
   }
 }
 
-TEST(ini, get_data_from_ini_false_case) {
-  IniFile ini_test_03;
-  ini_test_03.path =
-      fileTools.getCurrentDirectory() + "/files_test/no_find.ini";
+TEST(ini, get_false_case) {
+  IniFile test_03(fs::current_path() / "files_test/no_find.ini");
 
-  EXPECT_EQ(fileTools.iniSetup(ini_test_03), false);
+  EXPECT_FALSE(test_03.iniSetup());
 
   int int_value_01;
   int int_value_02;
 
-  fileTools.getFromIni(ini_test_03, "int", "int1", int_value_01, 22);
-  fileTools.getFromIni(ini_test_03, "int", "int2", int_value_02, 22);
+  test_03.getFromIni("int", "int1", int_value_01, 22);
+  test_03.getFromIni("int", "int2", int_value_02, 22);
 
   EXPECT_EQ(int_value_01, 22);
   EXPECT_EQ(int_value_02, 22);
 }
 
-TEST(ini, set_data_to_ini) {
-  IniFile ini_test_02;
-  ini_test_02.path =
-      fileTools.getCurrentDirectory() + "/files_test/ini_test_02.ini";
+TEST(ini, set_data) {
+  IniFile test_02(fs::current_path() / "files_test/ini_test_02.ini");
 
-  if (fileTools.iniSetup(ini_test_02)) {
-    fileTools.setToIni(ini_test_02, "string", "str1", "kok-s0s");
-    fileTools.setToIni(ini_test_02, "int", "int1", 22);
-    fileTools.setToIni(ini_test_02, "float", "float1", 22.09f);
-    fileTools.setToIni(ini_test_02, "double", "double1", 22.09);
-    fileTools.setToIni(ini_test_02, "bool", "bool1", true);
+  if (test_02.iniSetup()) {
+    test_02.setToIni("string", "str1", "name");
+    test_02.setToIni("int", "int1", 22);
+    test_02.setToIni("float", "float1", 22.09f);
+    test_02.setToIni("double", "double1", 22.09);
+    test_02.setToIni("bool", "bool1", true);
 
-    string output;
-    ini_test_02.ini.Save(output);
-    const char *path = (char *)ini_test_02.path.c_str();
-    ini_test_02.ini.SaveFile(path);
+    test_02.save();
   }
 }
 
-TEST(ini, set_array_data_to_ini) {
-  IniFile ini_test_02;
-  ini_test_02.path =
-      fileTools.getCurrentDirectory() + "/files_test/ini_test_02.ini";
+TEST(ini, set_array_data) {
+  IniFile test_02(fs::current_path() / "files_test/ini_test_02.ini");
 
-  if (fileTools.iniSetup(ini_test_02)) {
+  if (test_02.iniSetup()) {
     int arr_int[] = {2, 3, 4, 5, 6, 1};
     float arr_float[] = {1.01f, 2.01f, 3.01f};
     double arr_double[] = {2.11, 3.11, 1.11};
 
-    fileTools.setToIni(ini_test_02, "intArr", "iArr", arr_int, 6);
-    fileTools.setToIni(ini_test_02, "floatArr", "fArr", arr_float, 3);
-    fileTools.setToIni(ini_test_02, "doubleArr", "dArr", arr_double, 3);
+    test_02.setToIni("intArr", "iArr", arr_int, 6);
+    test_02.setToIni("floatArr", "fArr", arr_float, 3);
+    test_02.setToIni("doubleArr", "dArr", arr_double, 3);
 
-    string output;
-    ini_test_02.ini.Save(output);
-    const char *path = (char *)ini_test_02.path.c_str();
-    ini_test_02.ini.SaveFile(path);
+    test_02.save();
   }
 }
 
 #pragma endregion
 
-#pragma region json
+#pragma region JsonFile
 
 TEST(json, json_setup) {
-  JsonFile json_test;
-  json_test.path =
-      fileTools.getCurrentDirectory() + "/files_test/json_test.json";
+  JsonFile test(fs::current_path() / "files_test/json_test.json");
 
-  EXPECT_EQ(fileTools.jsonSetup(json_test), true);
+  EXPECT_TRUE(test.jsonSetup());
 }
 
-TEST(json, get_data_from_json) {
-  JsonFile json_test;
-  json_test.path =
-      fileTools.getCurrentDirectory() + "/files_test/json_test.json";
+TEST(json, get_data) {
+  JsonFile test(fs::current_path() / "files_test/json_test.json");
 
-  std::string json_value_string;
+  string json_value_string;
   int json_value_int;
   double json_value_double;
   bool json_value_bool;
   int depth_json_value_int;
   bool depth_json_value_bool;
-  std::string depth_json_value_string;
+  string depth_json_value_string;
 
-  EXPECT_EQ(fileTools.jsonSetup(json_test), true);
+  EXPECT_TRUE(test.jsonSetup());
 
-  fileTools.getFromJson(json_test, "encoding", json_value_string, "kkkkk");
-  fileTools.getFromJson(json_test, "int", json_value_int, 19);
-  fileTools.getFromJson(json_test, "double", json_value_double, 19.22);
-  fileTools.getFromJson(json_test, "bool", json_value_bool, true);
-  fileTools.getFromJson(json_test, "indent.length", depth_json_value_int, 19);
-  fileTools.getFromJson(json_test, "indent.use_space", depth_json_value_bool,
-                        false);
-  fileTools.getFromJson(json_test, "indent.g", depth_json_value_string,
-                        "bbbbb");
+  test.getFromJson("encoding", json_value_string, "kkkkk");
+  test.getFromJson("int", json_value_int, 19);
+  test.getFromJson("double", json_value_double, 19.22);
+  test.getFromJson("bool", json_value_bool, true);
+  test.getFromJson("indent.length", depth_json_value_int, 19);
+  test.getFromJson("indent.use_space", depth_json_value_bool, false);
+  test.getFromJson("indent.g", depth_json_value_string, "bbbbb");
 
   EXPECT_EQ(json_value_string, "UTF-8");
   EXPECT_EQ(json_value_int, 22);
@@ -373,57 +311,48 @@ TEST(json, get_data_from_json) {
   EXPECT_EQ(depth_json_value_string, "ekoko");
 }
 
-TEST(json, get_array_string_data_from_json) {
-  JsonFile json_test;
-  json_test.path =
-      fileTools.getCurrentDirectory() + "/files_test/json_test.json";
+TEST(json, get_array_string_data) {
+  JsonFile test(fs::current_path() / "files_test/json_test.json");
 
-  std::string json_value[3];
-  std::string json_target_value[] = {"python", "c++", "ruby"};
-  std::string json_default_value[] = {"java", "c#", "php"};
+  string json_value[3];
+  string json_target_value[] = {"python", "c++", "ruby"};
+  string json_default_value[] = {"java", "c#", "php"};
   int size = 3;
 
-  EXPECT_EQ(fileTools.jsonSetup(json_test), true);
-  fileTools.getFromJson(json_test, "plug-ins", json_value, json_default_value,
-                        size);
+  EXPECT_TRUE(test.jsonSetup());
+  test.getFromJson("plug-ins", json_value, json_default_value, size);
 
   for (int i = 0; i < size; ++i) {
     EXPECT_EQ(json_value[i], json_target_value[i]);
   }
 }
 
-TEST(json, get_array_int_data_from_json) {
-  JsonFile json_test;
-  json_test.path =
-      fileTools.getCurrentDirectory() + "/files_test/json_test.json";
+TEST(json, get_array_int_data) {
+  JsonFile test(fs::current_path() / "files_test/json_test.json");
 
   int json_value[3];
   int json_target_value[] = {1, 2, 3};
   int json_default_value[] = {3, 2, 1};
   int size = 3;
 
-  EXPECT_EQ(fileTools.jsonSetup(json_test), true);
-  fileTools.getFromJson(json_test, "indent.int_arr", json_value,
-                        json_default_value, size);
+  EXPECT_TRUE(test.jsonSetup());
+  test.getFromJson("indent.int_arr", json_value, json_default_value, size);
 
   for (int i = 0; i < size; ++i) {
     EXPECT_EQ(json_value[i], json_target_value[i]);
   }
 }
 
-TEST(json, get_array_double_data_from_json) {
-  JsonFile json_test;
-  json_test.path =
-      fileTools.getCurrentDirectory() + "/files_test/json_test.json";
+TEST(json, get_array_double_data) {
+  JsonFile test(fs::current_path() / "files_test/json_test.json");
 
   double json_value[3];
   double json_target_value[] = {1.11, 2.11, 3.11};
   double json_default_value[] = {3.11, 2.11, 1.11};
   int size = 3;
 
-  EXPECT_EQ(fileTools.jsonSetup(json_test), true);
-  fileTools.getFromJson(json_test, "indent.double_arr", json_value,
-                        json_default_value, size);
+  EXPECT_TRUE(test.jsonSetup());
+  test.getFromJson("indent.double_arr", json_value, json_default_value, size);
 
   for (int i = 0; i < size; ++i) {
     EXPECT_EQ(json_value[i], json_target_value[i]);
@@ -431,35 +360,30 @@ TEST(json, get_array_double_data_from_json) {
 }
 
 TEST(json, get_data_from_Json_false_case) {
-  JsonFile json_test;
-  json_test.path =
-      fileTools.getCurrentDirectory() + "/files_test/json_false.json";
+  JsonFile test(fs::current_path() / "files_test/json_false.json");
 
-  std::string json_value_string;
+  string json_value_string;
   int json_value_int;
   double json_value_double;
   bool json_value_bool;
   int depth_json_value_int;
   bool depth_json_value_bool;
-  std::string depth_json_value_string;
-  std::string json_value[3];
-  std::string json_target_value[] = {"python", "c++", "ruby"};
-  std::string json_default_value[] = {"java", "c#", "php"};
+  string depth_json_value_string;
+  string json_value[3];
+  string json_target_value[] = {"python", "c++", "ruby"};
+  string json_default_value[] = {"java", "c#", "php"};
   int size = 3;
 
-  EXPECT_EQ(fileTools.jsonSetup(json_test), false);
+  EXPECT_FALSE(test.jsonSetup());
 
-  fileTools.getFromJson(json_test, "encoding", json_value_string, "kkkkk");
-  fileTools.getFromJson(json_test, "int", json_value_int, 19);
-  fileTools.getFromJson(json_test, "double", json_value_double, 19.22);
-  fileTools.getFromJson(json_test, "bool", json_value_bool, true);
-  fileTools.getFromJson(json_test, "indent.length", depth_json_value_int, 19);
-  fileTools.getFromJson(json_test, "indent.use_space", depth_json_value_bool,
-                        false);
-  fileTools.getFromJson(json_test, "indent.g", depth_json_value_string,
-                        "bbbbb");
-  fileTools.getFromJson(json_test, "plug-ins", json_value, json_default_value,
-                        size);
+  test.getFromJson("encoding", json_value_string, "kkkkk");
+  test.getFromJson("int", json_value_int, 19);
+  test.getFromJson("double", json_value_double, 19.22);
+  test.getFromJson("bool", json_value_bool, true);
+  test.getFromJson("indent.length", depth_json_value_int, 19);
+  test.getFromJson("indent.use_space", depth_json_value_bool, false);
+  test.getFromJson("indent.g", depth_json_value_string, "bbbbb");
+  test.getFromJson("plug-ins", json_value, json_default_value, size);
 
   EXPECT_EQ(json_value_string, "kkkkk");
   EXPECT_EQ(json_value_int, 19);
@@ -474,117 +398,108 @@ TEST(json, get_data_from_Json_false_case) {
   }
 }
 
-TEST(json, set_data_to_json) {
-  JsonFile store_json;
-  store_json.path =
-      fileTools.getCurrentDirectory() + "/files_test/store_json.json";
+TEST(json, set_data) {
+  JsonFile store_json(fs::current_path() / "files_test/store_json.json");
 
   int a[10] = {0};
 
-  store_json.data["nickname"] = "kok-s0s";
-  store_json.data["birthday"] = "0219";
-  store_json.data["array"] = a;
+  store_json._data["nickname"] = "name";
+  store_json._data["birthday"] = "0219";
+  store_json._data["array"] = a;
 
   json sub;
 
   sub["work"] = "C++ Dev";
 
-  store_json.data["subJson"] = sub;
+  store_json._data["subJson"] = sub;
 
-  std::ofstream file(store_json.path);
-  file << store_json.data;
-  file.flush();
+  store_json.save();
 }
 
 #pragma endregion
 
-#pragma region dat
+#pragma region DatFile
 
-TEST(dat, read_data_from_dat) {
-  DatFile dat_test;
-  dat_test.path = fileTools.getCurrentDirectory() + "/files_test/dat_test.dat";
+TEST(dat, read_data) {
+  DatFile test(fs::current_path() / "files_test/dat_test.dat");
 
-  EXPECT_EQ(fileTools.readDatFile(dat_test), true);
+  EXPECT_TRUE(test.readData());
 }
 
-TEST(dat, read_data_from_dat_and_set_to_pointer_variable) {
-  string datFilePath =
-      fileTools.getCurrentDirectory() + "/files_test/dat_test.dat";
+TEST(dat, write_data) {
+  DatFile test(fs::current_path() / "files_test/dat_test.dat");
+
+  if (test.readData()) {
+    DatFile dat_test_copy = test;
+    fs::path copy_p = fs::current_path() / "files_test/dat_test_copy.dat";
+    dat_test_copy.setPath(copy_p);
+
+    EXPECT_TRUE(dat_test_copy.writeData());
+  }
+}
+
+TEST(dat, read_data_and_set_to_pointer_variable) {
+  fs::path path = fs::current_path() / "files_test/dat_test.dat";
+  string datFilePath = path.string();
 
   long dataSize = 8192;
   int num = dataSize / sizeof(char);
   unsigned char *variable =
       (unsigned char *)malloc(sizeof(unsigned char) * num);
 
-  if (fileTools.readDatFile(datFilePath, variable, num)) {
+  if (DatFile::readDatFile(datFilePath, variable, num)) {
     EXPECT_EQ((unsigned int)variable[0], 169);
   }
 }
 
-TEST(dat, write_data_to_dat) {
-  DatFile dat_test;
-  dat_test.path = fileTools.getCurrentDirectory() + "/files_test/dat_test.dat";
+TEST(dat, append_write_data) {
+  DatFile test(fs::current_path() / "files_test/dat_test.dat");
 
-  if (fileTools.readDatFile(dat_test)) {
-    DatFile dat_test_copy = dat_test;
-    dat_test_copy.path =
-        fileTools.getCurrentDirectory() + "/files_test/dat_test_copy.dat";
-    EXPECT_EQ(fileTools.writeDataToDatFile(dat_test_copy), true);
+  if (test.readData()) {
+    DatFile test_twice = test;
+    test_twice.setPath(fs::current_path() / "files_test/dat_test_twice.dat");
+
+    EXPECT_EQ(test_twice.getData()[0], 169);
+
+    EXPECT_TRUE(test_twice.writeData());
+    EXPECT_TRUE(DatFile::appendWriteDataToDatFile(test_twice.getPath(),
+                                                  &test_twice.getData()[0],
+                                                  test_twice.getData().size()));
   }
 }
 
-TEST(dat, append_write_data_to_dat) {
-  DatFile dat_test;
-  dat_test.path = fileTools.getCurrentDirectory() + "/files_test/dat_test.dat";
-
-  if (fileTools.readDatFile(dat_test)) {
-    DatFile dat_test_twice = dat_test;
-    dat_test_twice.path =
-        fileTools.getCurrentDirectory() + "/files_test/dat_test_twice.dat";
-
-    EXPECT_EQ(fileTools.writeDataToDatFile(dat_test_twice), true);
-    EXPECT_EQ(fileTools.appendWriteDataToDatFile(dat_test_twice.path,
-                                                 &dat_test_twice.data[0],
-                                                 dat_test_twice.data.size()),
-              true);
-  }
-}
-
-TEST(dat, save_output_data_to_dat) {
+TEST(dat, save_output_data) {
   string datFilePath =
-      fileTools.getCurrentDirectory() + "/files_test/dat_test.dat";
+      (fs::current_path() / "files_test/dat_test.dat").string();
 
   long dataSize = 8192;
   int num = dataSize / sizeof(char);
   unsigned char *variable = (unsigned char *)malloc(sizeof(char) * num);
 
-  if (fileTools.readDatFile(datFilePath, variable, num)) {
-    string dat_test_ptr =
-        fileTools.getCurrentDirectory() + "/files_test/dat_test_ptr.dat";
+  if (DatFile::readDatFile(datFilePath, variable, num)) {
+    string dat_test_appendAdd =
+        (fs::current_path() / "files_test/dat_test_appendAdd.dat").string();
 
     unsigned char *data = variable;
 
     int extData[] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
 
-    EXPECT_EQ(fileTools.saveOutputData(extData, 10, dat_test_ptr, data, 8192),
-              true);
+    EXPECT_EQ(
+        DatFile::saveOutputData(extData, 10, dat_test_appendAdd, data, 8192),
+        true);
   }
 }
 
 #pragma endregion
 
-#pragma region bmp
+#pragma region BmpFile
 
-TEST(bmp, read_data_from_bmp) {
-  BmpFile bmp_test_01;
-  BmpFile bmp_test_02;
-  bmp_test_01.path =
-      fileTools.getCurrentDirectory() + "/files_test/bmp_test_01.bmp";
-  bmp_test_02.path =
-      fileTools.getCurrentDirectory() + "/files_test/bmp_test_02.bmp";
+TEST(bmp, read_data) {
+  BmpFile bmp_test_01(fs::current_path() / "files_test/bmp_test_01.bmp");
+  BmpFile bmp_test_02(fs::current_path() / "files_test/bmp_test_02.bmp");
 
-  BMP bmpObject_01(bmp_test_01.path.c_str());
-  BMP bmpObject_02(bmp_test_02.path.c_str());
+  BMP bmpObject_01(bmp_test_01.getPath().c_str());
+  BMP bmpObject_02(bmp_test_02.getPath().c_str());
 
   EXPECT_EQ(bmpObject_01.bmp_info_header.height, 256);
   EXPECT_EQ(bmpObject_01.bmp_info_header.width, 128);
@@ -593,14 +508,12 @@ TEST(bmp, read_data_from_bmp) {
 }
 
 TEST(bmp, copy_bmp) {
-  BmpFile bmp_test_01;
-  bmp_test_01.path =
-      fileTools.getCurrentDirectory() + "/files_test/bmp_test_01.bmp";
+  BmpFile bmp_test_01(fs::current_path() / "files_test/bmp_test_01.bmp");
 
   string copy_bmp_file =
-      fileTools.getCurrentDirectory() + "/files_test/copy_bmp.bmp";
+      (fs::current_path() / "files_test/copy_bmp.bmp").string();
 
-  BMP bmpObject(bmp_test_01.path.c_str());
+  BMP bmpObject(bmp_test_01.getPath().c_str());
   bmpObject.write(copy_bmp_file.c_str());
 
   BMP bmpObject_copy(copy_bmp_file.c_str());
@@ -610,42 +523,38 @@ TEST(bmp, copy_bmp) {
 
 #pragma endregion
 
-#pragma region common
+#pragma region ImgFile
 
-TEST(common, copy) {
-  string txt_path = fileTools.getCurrentDirectory() + "/files_test/test_01.txt";
-  string copy_txt_path =
-      fileTools.getCurrentDirectory() + "/files_test/copy_test_01.txt";
+TEST(img, read_data) {
+  string img_p = (fs::current_path() / "files_test/ocean.jpg").string();
 
-  EXPECT_EQ(fileTools.copy(txt_path, copy_txt_path), true);
+  ImgFile file(img_p);
 
-  string ini_path =
-      fileTools.getCurrentDirectory() + "/files_test/ini_test_01.ini";
-  string copy_ini_path =
-      fileTools.getCurrentDirectory() + "/files_test/copy_ini_test_01.ini";
+  EXPECT_TRUE(file.readData());
+}
 
-  EXPECT_EQ(fileTools.copy(ini_path, copy_ini_path), true);
+TEST(img, write_data) {
+  ImgFile file(fs::current_path() / "files_test/ocean.jpg");
 
-  string json_path =
-      fileTools.getCurrentDirectory() + "/files_test/json_test.json";
-  string copy_json_path =
-      fileTools.getCurrentDirectory() + "/files_test/copy_json_test.json";
+  if (file.readData()) {
+    ImgFile copy_f = file;
 
-  EXPECT_EQ(fileTools.copy(json_path, copy_json_path), true);
+    copy_f.setPath(fs::current_path() / "files_test/ocean_copy.jpg");
+    EXPECT_TRUE(copy_f.writeData());
+  }
+}
 
-  string dat_path =
-      fileTools.getCurrentDirectory() + "/files_test/dat_test.dat";
-  string copy_dat_path =
-      fileTools.getCurrentDirectory() + "/files_test/copy_dat_test.json";
+TEST(img, write_data_2) {
+  ImgFile file(fs::current_path() / "files_test/ocean.jpg");
 
-  EXPECT_EQ(fileTools.copy(dat_path, copy_dat_path), true);
+  if (file.readData()) {
+    ImgFile copy_f(fs::current_path() / "files_test/ocean_copy2.jpg");
 
-  string bmp_path =
-      fileTools.getCurrentDirectory() + "/files_test/bmp_test_01.bmp";
-  string copy_bmp_path =
-      fileTools.getCurrentDirectory() + "/files_test/copy_bmp_test_01.bmp";
+    copy_f.setData(file.getData());
+    copy_f.setLength(file.getLength());
 
-  EXPECT_EQ(fileTools.copy(bmp_path, copy_bmp_path), true);
+    EXPECT_TRUE(copy_f.writeData());
+  }
 }
 
 #pragma endregion
@@ -700,38 +609,51 @@ TEST(UString, left_value) {
   string arg_01 = "test";
   int arg_02 = 1;
 
-  std::cout << UString("C:/home/%1/%2/%3.txt").args(arg_01, arg_02, "text")
-            << std::endl;
+  cout << UString("C:/home/%1/%2/%3.txt").args(arg_01, arg_02, "text") << endl;
 }
 
+#pragma endregion
+
+#pragma region Variant
+
+TEST(variant, type) {
+  vector<Variant> vec;
+  vec = {true, 'c', 1, 1.2, "hello"};
+
+  EXPECT_EQ(vec[0].toString(), "true");
+  EXPECT_EQ(vec[1].toString(), "c");
+  EXPECT_EQ(vec[2].toString(), "1");
+  EXPECT_EQ(vec[3].toString(), "1.2");
+  EXPECT_EQ(vec[4].toString(), "hello");
+}
 #pragma endregion
 
 #pragma region file
 
 TEST(file, exist) {
-  string path_01 = fileTools.getCurrentDirectory() + "/files_test/test_01.txt";
-  string path_02 = fileTools.getCurrentDirectory() + "/files_test/test_10.txt";
+  fs::path path_01 = fs::current_path() / "files_test/test_01.txt";
+  fs::path path_02 = fs::current_path() / "files_test/test_10.txt";
 
-  EXPECT_EQ(fs::exists(UFile(path_01).handle()), true);
-  EXPECT_EQ(fs::exists(UFile(path_02).handle()), false);
+  EXPECT_TRUE(fs::exists(UFile(path_01).handle()));
+  EXPECT_FALSE(fs::exists(UFile(path_02).handle()));
 }
 
 TEST(file, get_file_size) {
   fs::path p = fs::current_path() / "example.bin";
   UFile file = UFile(p);
 
-  std::ofstream(p) << "kok-s0s";  // create file of size 7
+  ofstream(p) << "hello world";  // create file of size 1
 
-  EXPECT_EQ(fs::file_size(file.handle()), 7);
+  EXPECT_EQ(fs::file_size(file.handle()), 11);
 
-  fs::remove(p);
+  // fs::remove(p);
 }
 
 TEST(file, get_absolute_path) {
   fs::path p = fs::current_path() / "test.txt";
   UFile file = UFile(p);
 
-  std::ofstream(p) << "kok-s0s";  // create file of size 7
+  ofstream(p) << "hello world";  // create file of size 11
 
   EXPECT_EQ(fs::absolute(file.handle()), p);
 }
@@ -740,17 +662,210 @@ TEST(file, delete_file) {
   fs::path p = fs::current_path() / "hello.cpp";
   UFile file = UFile(p);
 
-  std::ofstream(p) << "world";
+  ofstream(p) << "world";
 
   EXPECT_EQ(fs::file_size(file.handle()), 5);
 
-  EXPECT_EQ(fs::remove(p), true);
+  EXPECT_TRUE(fs::remove(p));
 }
 
-TEST(file, if_file_exist_then_find_its_father_directory) {}
+TEST(file, delete_directory) {
+  fs::path d = (fs::current_path() / "files_test/hello_d");
 
-TEST(file, copy) {}
+  EXPECT_NE(fs::remove_all(d), 0);
+}
 
-TEST(file, use_file_as_params) {}
+TEST(file, if_file_exist_then_find_its_father_directory) {
+  string path = (fs::current_path() / "files_test/test_01.txt").string();
+  if (fs::exists(path)) {
+    EXPECT_EQ(fs::path(path).parent_path(),
+              (fs::current_path() / "files_test").string());
+  }
+}
+
+TEST(file, find_its_father_directory) {
+  string txt = (fs::current_path() / "files_txt/test_01.txt").string();
+  if (!fs::exists(fs::path(txt).parent_path()))
+    fs::create_directory(fs::path(txt).parent_path());
+}
+
+TEST(file, copy) {
+  const auto copyOptions =
+      fs::copy_options::update_existing | fs::copy_options::recursive;
+
+  string txt_path = (fs::current_path() / "files_test/test_01.txt").string();
+  string copy_txt_path =
+      (fs::current_path() / "files_test/copy_test_01.txt").string();
+
+  fs::copy(txt_path, copy_txt_path, copyOptions);
+
+  string ini_path =
+      (fs::current_path() / "files_test/ini_test_01.ini").string();
+  string copy_ini_path =
+      (fs::current_path() / "files_test/copy_ini_test_01.ini").string();
+
+  fs::copy(ini_path, copy_ini_path, copyOptions);
+
+  string json_path =
+      (fs::current_path() / "files_test/json_test.json").string();
+  string copy_json_path =
+      (fs::current_path() / "files_test/copy_json_test.json").string();
+
+  fs::copy(json_path, copy_json_path, copyOptions);
+
+  string dat_path = (fs::current_path() / "files_test/dat_test.dat").string();
+  string copy_dat_path =
+      (fs::current_path() / "files_test/copy_dat_test.dat").string();
+
+  fs::copy(dat_path, copy_dat_path, copyOptions);
+
+  string bmp_path =
+      (fs::current_path() / "files_test/bmp_test_01.bmp").string();
+  string copy_bmp_path =
+      (fs::current_path() / "files_test/copy_bmp_test_01.bmp").string();
+
+  fs::copy(bmp_path, copy_bmp_path, copyOptions);
+}
+
+TEST(file, deleteReferFile_recursive) {
+  string dir = (fs::current_path() / "sandbox").string();
+  fs::create_directories(dir);
+  fs::create_directories(dir + "/a/b");
+  ofstream(dir + "/file1.txt");
+  ofstream(dir + "/a/file1.txt");
+  ofstream(dir + "/a/b/file1.txt");
+
+  UFile::deleteReferFile(dir, "file1.txt");
+}
+
+TEST(file, deleteReferFile) {
+  string dir = (fs::current_path() / "sandbox2").string();
+  fs::create_directories(dir);
+  fs::create_directories(dir + "/a/b");
+  ofstream(dir + "/file1.txt");
+  ofstream(dir + "/a/file1.txt");
+  ofstream(dir + "/a/b/file1.txt");
+
+  UFile::deleteReferFile(dir, "file1.txt", false);
+}
+
+TEST(file, copyFile_cover) {
+  string dir = (fs::current_path() / "sandbox3").string();
+  fs::create_directories(dir);
+  fs::create_directories(dir + "/a/b");
+  ofstream(dir + "/file1.txt") << "file1.txt";
+  ofstream(dir + "/a/file2.txt") << "file2.txt";
+  ofstream(dir + "/a/b/file3.txt") << "file3.txt";
+
+  UFile::copyFile(dir + "/file1.txt", dir + "/a/b/file3.txt", true);
+}
+
+TEST(file, copyFile) {
+  string dir = (fs::current_path() / "sandbox6").string();
+  fs::create_directories(dir);
+  fs::create_directories(dir + "/a/b");
+  ofstream(dir + "/file1.txt") << "file1.txt";
+  ofstream(dir + "/a/file2.txt") << "file2.txt";
+  ofstream(dir + "/a/b/file3.txt") << "file3.txt";
+
+  UFile::copyFile(dir + "/file1.txt", dir + "/a/b/file3.txt", false);
+}
+
+TEST(file, copyDirectoryFiles) {
+  string dir = (fs::current_path() / "sandbox7").string();
+  fs::create_directories(dir);
+  fs::create_directories(dir + "/a/b");
+  ofstream(dir + "/file1.txt") << "file1.txt";
+  ofstream(dir + "/a/file2.txt") << "file2.txt";
+  ofstream(dir + "/a/b/file3.txt") << "file3.txt";
+
+  string targetDir = (fs::current_path() / "sandbox9").string();
+
+  UFile::copyDirectoryFiles(dir, targetDir, false);
+}
+
+TEST(file, copyDirectoryFiles_cover) {
+  string dir = (fs::current_path() / "sandbox12").string();
+  fs::create_directories(dir);
+  fs::create_directories(dir + "/a/b");
+  ofstream(dir + "/file1.txt") << "file11.txt";
+  ofstream(dir + "/a/file2.txt") << "file22.txt";
+  ofstream(dir + "/a/b/file3.txt") << "file33.txt";
+
+  string targetDir = (fs::current_path() / "sandbox13").string();
+  fs::create_directories(targetDir);
+  fs::create_directories(targetDir + "/a/b");
+  ofstream(targetDir + "/file1.txt") << "file100.txt";
+  ofstream(targetDir + "/a/file2.txt") << "file200.txt";
+  ofstream(targetDir + "/a/b/file3.txt") << "file300.txt";
+
+  UFile::copyDirectoryFiles(dir, targetDir, true);
+}
+
+TEST(file, getFileObj) {
+  fstream *txt = UFile::getFileObj(
+      (fs::current_path() / "files_test/test_01.txt").string());
+  if (txt->is_open()) {
+    std::istreambuf_iterator<char> beg(*txt), end;
+    string str(beg, end);
+    EXPECT_EQ(str, "name\ni like code.\n");
+  }
+  txt->close();
+}
+
+TEST(file, moveFromFileToFileData) {
+  fstream *file = new fstream;
+
+  file->open((fs::current_path() / "files_test/fstream_test.dat").string(),
+             ios::binary | ios::out | std::ios_base::app);
+
+  string dat = (fs::current_path() / "files_test/dat_test.dat").string();
+
+  EXPECT_TRUE(UFile::moveFromFileToFileData(file, dat));
+}
+
+#pragma endregion
+
+#pragma region fstream
+
+TEST(fstream, append_write) {
+  int _1MB = 1024;
+  char arr[1024];
+  for (int i = 0; i < _1MB; ++i) {
+    arr[i] = '0';
+  }
+  char *_1MBBuff = arr;
+  ofstream file;
+  file.open((fs::current_path() / "file1.dat").string(),
+            ios::out | ios::binary);
+  if (file.is_open()) {
+    file.write((const char *)_1MBBuff, _1MB * sizeof(char));
+  }
+  file.close();
+}
+
+TEST(fstream, constructor) {
+  fstream txt((fs::current_path() / "files_test/test_01.txt"));
+
+  if (txt.is_open()) {
+    std::istreambuf_iterator<char> beg(txt), end;
+    string str(beg, end);
+    EXPECT_EQ(str, "name\ni like code.\n");
+  }
+}
+
+TEST(fstream, binary) {
+  fstream file((fs::current_path() / "files_test/dat_test.dat"));
+
+  if (file.is_open()) {
+    file.seekg(0, ios::end);
+    int length = (int)file.tellg();
+    file.seekg(0, ios::beg);
+
+    uint8_t *data = new uint8_t[length];
+    file.read((char *)data, length * sizeof(char));
+    EXPECT_EQ((int)data[0], 169);
+  }
+}
 
 #pragma endregion
