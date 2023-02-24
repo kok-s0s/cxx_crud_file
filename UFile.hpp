@@ -266,57 +266,6 @@ class UFile {
 
     return true;
   }
-
-  // TODO tomorrow
-  /**
-   * @brief 遍历文件
-   * @param dirPath       被搜索的文件夹路径
-   * @param[out] fileInfo 搜索到的文件信息
-   * @param fileName
-   * 被搜索的文件名（带后缀），为空时搜索全部，仅当isDir为false时有效
-   * @param isDir
-   * 是否仅获取文件夹,true为获得所有文件夹路径，false为获取所有文件路径
-   * @param isRecursive
-   * 是否递归，true为递归获取所有子文件夹内容，false为仅获取当前文件夹下的文件
-   * @param fileName
-   * 被搜索的文件名（不带后缀），为空时搜索全部，仅当isDir为false且fileName为空时有效
-   * @param baseName		   类型，仅当isDir为false且fileName为空时有效
-   */
-  // void searchFile(std::string dirPath, std::vector<QFileInfo> &fileInfo,
-  //                 std::string fileName = "", bool isDir = false,
-  //                 bool isRecursive = true, std::string baseName = "",
-  //                 std::string suffix = "") {
-  //   QDir dir(dirPath);
-  //   dir.setFilter(QDir::AllEntries | QDir::NoDotAndDotDot);
-
-  //   for each (QFileInfo item in dir.entryInfoList()) {
-  //     if (item.isFile()) {
-  //       if (!isDir) {
-  //         bool fileNameMatch =
-  //             (!fileName.isEmpty()) &&
-  //             (item.fileName().compare(fileName, Qt::CaseInsensitive) == 0);
-  //         bool baseNameOrSuffixMatch =
-  //             fileName.isEmpty() &&
-  //             (suffix.isEmpty() || item.completeSuffix().compare(
-  //                                      suffix, Qt::CaseInsensitive) == 0) &&
-  //             (fileName.isEmpty() || item.completeBaseName().compare(
-  //                                        fileName, Qt::CaseInsensitive) ==
-  //                                        0);
-  //         if (fileNameMatch || baseNameOrSuffixMatch) {
-  //           fileInfo.push_back(item);
-  //         }
-  //       }
-  //     } else {
-  //       if (isDir) {
-  //         fileInfo.push_back(item);
-  //       }
-  //       if (isRecursive) {
-  //         searchFile(item.absoluteFilePath(), fileInfo, fileName, isDir,
-  //                    isRecursive, baseName, suffix);
-  //       }
-  //     }
-  //   }
-  // }
 };
 
 #endif  // UFILE_HPP_
