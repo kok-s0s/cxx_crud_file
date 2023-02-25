@@ -20,9 +20,9 @@ class IniFile : public UFile {
   bool iniSetup() {
     _ini.SetUnicode();
 
-    const char *path = (char *)getPath().c_str();
+    std::string path = getPath();
 
-    SI_Error rc = _ini.LoadFile(path);
+    SI_Error rc = _ini.LoadFile(path.c_str());
     if (rc < 0) return false;
 
     return true;
