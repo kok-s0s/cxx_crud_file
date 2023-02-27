@@ -11,6 +11,8 @@ class ImgFile : public UFile {
   int _length;
 
  public:
+  ImgFile() {}
+  ImgFile(const char* path) : UFile(path) {}
   ImgFile(const std::string& path) : UFile(path) {}
   ImgFile(const fs::path& path) : UFile(path) {}
   ~ImgFile() {}

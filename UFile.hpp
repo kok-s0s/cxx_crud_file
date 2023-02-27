@@ -64,7 +64,7 @@ class UFile {
 
     char *token = strtok(thisStr, thisSeparator);
     while (token) {
-      string tempStr = token;
+      std::string tempStr = token;
       result.push_back(tempStr);
       token = strtok(NULL, thisSeparator);
     }
@@ -73,23 +73,17 @@ class UFile {
     return result;
   }
 
-  /**
-   * @brief 删除指定文件
-   * @param dirPath 被搜索的文件夹路径
-   * @param fileName 要删除的文件名
-   * @param isRecursive
-   * 是否递归，true为递归获取所有子文件夹内容，false为仅获取当前文件夹下的文件
-   */
-  static void deleteReferFile(std::string dirPath, std::string fileName,
-                              bool isRecursive = true) {
-    if (isRecursive) {
-      for (auto const &dir_entry : fs::recursive_directory_iterator(dirPath)) {
+  static void deleteTargetFile(std::string directoryPath, std::string fileName,
+                               bool recursiveTraversal = true) {
+    if (recursiveTraversal) {
+      for (auto const &dir_entry :
+           fs::recursive_directory_iterator(directoryPath)) {
         if (dir_entry.path().filename() == fileName) {
           remove(dir_entry.path());
         }
       }
     } else {
-      for (auto const &dir_entry : fs::directory_iterator(dirPath)) {
+      for (auto const &dir_entry : fs::directory_iterator(directoryPath)) {
         if (dir_entry.path().filename() == fileName) {
           remove(dir_entry.path());
         }
@@ -97,32 +91,30 @@ class UFile {
     }
   }
 
-  static void copyFile(const std::string &fromFile, const std::string &toFile,
-                       const bool &coverFileIfExist) {
-    fs::path file(toFile);
+  static void copyFile(const std::string &sourceFile,
+                       const std::string &targetFile,
+                       const bool &overwriteFile) {
+    fs::path file(targetFile);
     fs::create_directories(file.parent_path());
 
-    if (coverFileIfExist && fs::exists(toFile)) {
-      fs::remove(toFile);
+    if (overwriteFile && fs::exists(targetFile)) {
+      fs::remove(targetFile);
     }
 
     const auto copyOptions =
         fs::copy_options::update_existing | fs::copy_options::recursive;
 
-    fs::copy(fromFile, toFile, copyOptions);
+    fs::copy(sourceFile, targetFile, copyOptions);
   }
 
-  /**
-   * @brief 复制文件夹中的文件
-   */
-  static bool copyDirectoryFiles(const std::string &fromDir,
-                                 const std::string &toDir,
-                                 const bool &coverFileIfExist) {
-    if (!fs::exists(fromDir)) return false;
+  static bool copyDirectoryFiles(const std::string &sourceDirectory,
+                                 const std::string &targetDirectory,
+                                 const bool &overwriteFile) {
+    if (!fs::exists(sourceDirectory)) return false;
 
-    fs::create_directories(toDir);
+    fs::create_directories(targetDirectory);
 
-    for (auto const &dir_entry : fs::directory_iterator(fromDir)) {
+    for (auto const &dir_entry : fs::directory_iterator(sourceDirectory)) {
       if (dir_entry.path().filename() == "." ||
           dir_entry.path().filename() == "..")
         continue;
@@ -130,139 +122,28 @@ class UFile {
       if (fs::is_directory(dir_entry.symlink_status())) {
         if (!copyDirectoryFiles(
                 dir_entry.path().string(),
-                (fs::path(toDir) / dir_entry.path().filename()).string(),
-                coverFileIfExist)) {
+                (fs::path(targetDirectory) / dir_entry.path().filename())
+                    .string(),
+                overwriteFile)) {
           return false;
         }
       } else {
-        if (coverFileIfExist &&
-            fs::exists(
-                (fs::path(toDir) / dir_entry.path().filename()).string())) {
-          fs::remove((fs::path(toDir) / dir_entry.path().filename()).string());
+        if (overwriteFile &&
+            fs::exists((fs::path(targetDirectory) / dir_entry.path().filename())
+                           .string())) {
+          fs::remove((fs::path(targetDirectory) / dir_entry.path().filename())
+                         .string());
         }
 
         const auto copyOptions =
             fs::copy_options::update_existing | fs::copy_options::recursive;
 
-        fs::copy(dir_entry.path().string(),
-                 (fs::path(toDir) / dir_entry.path().filename()).string(),
-                 copyOptions);
+        fs::copy(
+            dir_entry.path().string(),
+            (fs::path(targetDirectory) / dir_entry.path().filename()).string(),
+            copyOptions);
       }
     }
-
-    return true;
-  }
-
-  static std::fstream *getFileObj(const std::string &path) {
-    std::fstream *file;
-    if (fs::exists(path)) {
-      file = new std::fstream;
-      file->open(path, std::ios::in | std::ios::out | std::ios::binary);
-    }
-    return file;
-  }
-
-  /**
-  ** @brief 从std::fstream中读取数据存储到另一个std::fstream
-  ** @details 分段存储，减少内存申请
-  ** @param file std::fstream的指针
-  ** @param newFilePath 新存储的文件全路径
-  ** @param startPos std::fstream的起始位置
-  ** @param moveSize 需要存储的数据长度
-  ** @return 成功返回true
-  */
-  static bool moveFromFileToFile(std::fstream *srcfile, std::fstream *desfile,
-                                 const int &startPos, const int &moveSize) {
-    int maxWriteLen = 1024 * 1024;
-    int leftLen = moveSize;
-
-    srcfile->seekg(startPos);
-
-    srcfile->seekg(0, std::ios::end);
-    int fileSize = (int)srcfile->tellg();
-    srcfile->seekg(startPos, std::ios::beg);
-
-    desfile->seekp(0, std::ios::end);
-
-    std::vector<uint8_t> pos;
-    while (leftLen > 0) {
-      int writeLen = leftLen > maxWriteLen ? maxWriteLen : leftLen;
-      leftLen = leftLen - writeLen;
-      pos.resize(writeLen);
-
-      if (fileSize < (int)srcfile->tellg() + writeLen) {
-        return false;
-      }
-
-      srcfile->read((char *)pos.data(), writeLen * sizeof(char));
-
-      desfile->write((const char *)pos.data(), writeLen * sizeof(char));
-    }
-
-    return true;
-  }
-
-  /**
-  ** @brief 从std::fstream中读取数据存储到文件
-  ** @details 分段存储，减少内存申请
-  ** @param file std::fstream的指针
-  ** @param newFilePath 新存储的文件全路径
-  ** @param startPos std::fstream的起始位置
-  ** @param moveSize 需要存储的数据长度
-  ** @return 成功返回true
-  */
-  static bool moveFromFileDataToFile(std::fstream *file,
-                                     const std::string &newFilePath,
-                                     const int &startPos, const int &moveSize) {
-    bool bRet = false;
-    std::fstream tempFile;
-
-    tempFile.open(newFilePath, std::ios::in | std::ios::out | std::ios::binary);
-
-    if (!tempFile.is_open()) {
-      return bRet;
-    }
-
-    bRet = moveFromFileToFile(file, &tempFile, startPos, moveSize);
-
-    tempFile.close();
-
-    return bRet;
-  }
-
-  /**
-  ** @brief 将文件数据追加存储到std::fstream中，由外部决定是否要追加
-  ** @details 分段存储，减少内存申请
-  ** @param file std::fstream的指针
-  ** @param filePath 文件全路径
-  ** @return 成功返回true
-  */
-  static bool moveFromFileToFileData(std::fstream *file,
-                                     const std::string &filePath) {
-    std::fstream tempFile;
-
-    tempFile.open(filePath, std::ios::in | std::ios::binary);
-
-    if (!tempFile.is_open()) return false;
-
-    int maxWriteLen = 1024 * 1024;
-    tempFile.seekg(0, std::ios::end);
-    int leftLen = (int)tempFile.tellg();
-    tempFile.seekg(0, std::ios::beg);
-
-    file->seekp(0, std::ios::end);
-
-    std::vector<uint8_t> pos;
-    while (leftLen > 0) {
-      int writeLen = leftLen > maxWriteLen ? maxWriteLen : leftLen;
-      leftLen = leftLen - writeLen;
-      pos.resize(writeLen);
-
-      tempFile.read((char *)pos.data(), writeLen * sizeof(char));
-
-      file->write((const char *)pos.data(), writeLen * sizeof(char));
-    }
-    tempFile.close();
 
     return true;
   }

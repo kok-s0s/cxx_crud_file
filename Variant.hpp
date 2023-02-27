@@ -100,7 +100,11 @@ class Variant {
     } else {
       size_t len = strlen(str);
       _d.data.ptr = new char[strlen(str) + 1];
+#if defined(_MSC_VER)
       strcpy_s(static_cast<char *>(_d.data.ptr), strlen(str) + 1, str);
+#elif defined(__GNUC__)
+      strcpy(static_cast<char *>(_d.data.ptr), str);
+#endif
     }
   }
 
@@ -109,7 +113,11 @@ class Variant {
       make_invalid();
     } else {
       _d.data.ptr = new char[wcslen(wstr) + 1];
+#if defined(_MSC_VER)
       wcscpy_s((wchar_t *)_d.data.ptr, wcslen(wstr) + 1, wstr);
+#elif defined(__GNUC__)
+      wcscpy((wchar_t *)_d.data.ptr, wstr);
+#endif
     }
   }
 
@@ -118,7 +126,11 @@ class Variant {
       make_invalid();
     } else {
       _d.data.ptr = new char[str.size() + 1];
+#if defined(_MSC_VER)
       strcpy_s((char *)_d.data.ptr, str.size() + 1, str.c_str());
+#elif defined(__GNUC__)
+      strcpy((char *)_d.data.ptr, str.c_str());
+#endif
     }
   }
 
@@ -127,7 +139,11 @@ class Variant {
       make_invalid();
     } else {
       _d.data.ptr = new wchar_t[wstr.size() + 1];
+#if defined(_MSC_VER)
       wcscpy_s((wchar_t *)_d.data.ptr, wstr.size() + 1, wstr.c_str());
+#elif defined(__GNUC__)
+      wcscpy((wchar_t *)_d.data.ptr, wstr.c_str());
+#endif
     }
   }
 
@@ -135,15 +151,25 @@ class Variant {
     if (String == _d.type) {
       _d.data.ptr =
           new char[strlen(static_cast<char *>(other._d.data.ptr)) + 1];
+#if defined(_MSC_VER)
       strcpy_s(static_cast<char *>(_d.data.ptr),
                strlen(static_cast<char *>(other._d.data.ptr)) + 1,
                static_cast<char *>(other._d.data.ptr));
+#elif defined(__GNUC__)
+      strcpy(static_cast<char *>(_d.data.ptr),
+             static_cast<char *>(other._d.data.ptr));
+#endif
     } else if (WString == _d.type) {
       _d.data.ptr =
           new char[wcslen(static_cast<wchar_t *>(other._d.data.ptr)) + 1];
+#if defined(_MSC_VER)
       wcscpy_s(static_cast<wchar_t *>(_d.data.ptr),
                wcslen(static_cast<wchar_t *>(other._d.data.ptr)) + 1,
                static_cast<wchar_t *>(other._d.data.ptr));
+#elif defined(__GNUC__)
+      wcscpy(static_cast<wchar_t *>(_d.data.ptr),
+             static_cast<wchar_t *>(other._d.data.ptr));
+#endif
     }
   }
   Variant(Variant &&other) : _d(other._d) {
@@ -167,15 +193,25 @@ class Variant {
     } else if (String == other._d.type) {
       _d.data.ptr =
           new char[strlen(static_cast<char *>(other._d.data.ptr)) + 1];
+#if defined(_MSC_VER)
       strcpy_s(static_cast<char *>(_d.data.ptr),
                strlen(static_cast<char *>(other._d.data.ptr)) + 1,
                static_cast<char *>(other._d.data.ptr));
+#elif defined(__GNUC__)
+      strcpy(static_cast<char *>(_d.data.ptr),
+             static_cast<char *>(other._d.data.ptr));
+#endif
     } else if (WString == other._d.type) {
       _d.data.ptr =
           new char[wcslen(static_cast<wchar_t *>(other._d.data.ptr)) + 1];
+#if defined(_MSC_VER)
       wcscpy_s(static_cast<wchar_t *>(_d.data.ptr),
                wcslen(static_cast<wchar_t *>(other._d.data.ptr)) + 1,
                static_cast<wchar_t *>(other._d.data.ptr));
+#elif defined(__GNUC__)
+      wcscpy(static_cast<wchar_t *>(_d.data.ptr),
+             static_cast<wchar_t *>(other._d.data.ptr));
+#endif
     } else
       _d.data = other._d.data;
     this->_d.type = other._d.type;
