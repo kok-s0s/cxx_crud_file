@@ -8,6 +8,7 @@
 class TxtFile : public UFile {
  private:
   std::string _data = "";
+  std::fstream file;
 
  public:
   TxtFile() {}
@@ -17,8 +18,6 @@ class TxtFile : public UFile {
   ~TxtFile() {}
 
   bool readData() {
-    std::fstream file;
-
     file.open(getPath(), std::ios::in);
 
     if (file.is_open()) {
@@ -35,8 +34,6 @@ class TxtFile : public UFile {
   }
 
   bool writeData() {
-    std::fstream file;
-
     file.open(getPath(), std::ios::out);
 
     if (file.is_open()) {
@@ -51,8 +48,6 @@ class TxtFile : public UFile {
   }
 
   bool appendWriteData(const std::string data) {
-    std::fstream file;
-
     file.open(getPath(), std::ios_base::app);
 
     if (file.is_open()) {
