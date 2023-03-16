@@ -1,6 +1,7 @@
 #ifndef VARIANT_HPP_
 #define VARIANT_HPP_
 
+#include <cstring>
 #include <sstream>
 #include <string>
 
@@ -183,7 +184,7 @@ class Variant {
     if (this == &other) return *this;
     if (String == _d.type || WString == _d.type) {
       if (_d.data.ptr) {
-        delete[] _d.data.ptr;
+        delete[](char *) _d.data.ptr;
         _d.data.ptr = nullptr;
       }
     }

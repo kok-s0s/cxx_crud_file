@@ -1,8 +1,6 @@
 #ifndef JSONFILE_HPP_
 #define JSONFILE_HPP_
 
-#include <fstream>
-
 #include "UFile.hpp"
 #include "json/json.hpp"
 
@@ -35,6 +33,8 @@ class JsonFile : public UFile {
 
   void getFromJson(const std::string &key, std::string &param,
                    std::string defaultVal) {
+    if (key == "") param = defaultVal;
+
     json temp = _data;
     std::vector<std::string> keyArr = split(key, ".");
 
@@ -49,6 +49,8 @@ class JsonFile : public UFile {
 
   template <typename T>
   void getFromJson(const std::string &key, T &param, T defaultVal) {
+    if (key == "") param = defaultVal;
+
     json temp = _data;
     std::vector<std::string> keyArr = split(key, ".");
 
@@ -63,6 +65,8 @@ class JsonFile : public UFile {
 
   void getFromJson(const std::string &key, std::string *param,
                    std::string *defaultVal, const int &size) {
+    if (key == "") param = defaultVal;
+
     json temp = _data;
     std::vector<std::string> keyArr = split(key, ".");
 
