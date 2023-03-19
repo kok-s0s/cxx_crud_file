@@ -1,5 +1,5 @@
 #ifndef BMP_H_
-#define BPM_H_
+#define BMP_H_
 
 #include <fstream>
 #include <iostream>

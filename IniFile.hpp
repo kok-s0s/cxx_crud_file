@@ -151,8 +151,7 @@ class IniFile : public UFile {
   void save() {
     std::string output;
     _ini.Save(output);
-    const char *path = (char *)getPath().c_str();
-    _ini.SaveFile(path);
+    _ini.SaveFile(getPath().c_str());
   }
 };
 
