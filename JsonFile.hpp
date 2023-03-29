@@ -11,9 +11,9 @@ class JsonFile : public UFile {
   json _data;
 
   JsonFile() {}
-  JsonFile(const char *path) : UFile(path) {}
-  JsonFile(const std::string &path) : UFile(path) {}
-  JsonFile(const fs::path &path) : UFile(path) {}
+  explicit JsonFile(const char *path) : UFile(path) {}
+  explicit JsonFile(const std::string &path) : UFile(path) {}
+  explicit JsonFile(const fs::path &path) : UFile(path) {}
   ~JsonFile() {}
 
   bool jsonSetup() {
@@ -32,8 +32,11 @@ class JsonFile : public UFile {
   }
 
   void getFromJson(const std::string &key, std::string &param,
-                   std::string defaultVal) {
-    if (key == "") param = defaultVal;
+                   const std::string &defaultVal) {
+    if (key == "") {
+      param = defaultVal;
+      return;
+    }
 
     json temp = _data;
     std::vector<std::string> keyArr = split(key, ".");
@@ -49,7 +52,10 @@ class JsonFile : public UFile {
 
   template <typename T>
   void getFromJson(const std::string &key, T &param, T defaultVal) {
-    if (key == "") param = defaultVal;
+    if (key == "") {
+      param = defaultVal;
+      return;
+    }
 
     json temp = _data;
     std::vector<std::string> keyArr = split(key, ".");
@@ -64,16 +70,19 @@ class JsonFile : public UFile {
   }
 
   void getFromJson(const std::string &key, std::string *param,
-                   std::string *defaultVal, const int &size) {
-    if (key == "") param = defaultVal;
+                   const std::string *defaultVal, const int &size) {
+    int index = 0;
+
+    if (key == "") {
+      for (int i = index; i < size; ++i) param[i] = defaultVal[i];
+      return;
+    }
 
     json temp = _data;
     std::vector<std::string> keyArr = split(key, ".");
 
     for (int i = 0; i < keyArr.size() - 1; ++i)
       if (temp.contains(keyArr[i])) temp = temp.at(keyArr[i]);
-
-    int index = 0;
 
     if (temp.contains(keyArr[keyArr.size() - 1])) {
       const json thisKeyArrValue = temp.at(keyArr[keyArr.size() - 1]);
@@ -87,15 +96,20 @@ class JsonFile : public UFile {
   }
 
   template <typename T>
-  void getFromJson(const std::string &key, T *param, T *defaultVal,
+  void getFromJson(const std::string &key, T *param, const T *defaultVal,
                    const int &size) {
+    int index = 0;
+
+    if (key == "") {
+      for (int i = index; i < size; ++i) param[i] = defaultVal[i];
+      return;
+    }
+
     json temp = _data;
     std::vector<std::string> keyArr = split(key, ".");
 
     for (int i = 0; i < keyArr.size() - 1; ++i)
       if (temp.contains(keyArr[i])) temp = temp.at(keyArr[i]);
-
-    int index = 0;
 
     if (temp.contains(keyArr[keyArr.size() - 1])) {
       const json thisKeyArrValue = temp.at(keyArr[keyArr.size() - 1]);

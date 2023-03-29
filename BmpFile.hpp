@@ -7,9 +7,9 @@
 class BmpFile : public UFile {
  public:
   BmpFile() {}
-  BmpFile(const char* path) : UFile(path) {}
-  BmpFile(const std::string& path) : UFile(path) {}
-  BmpFile(const fs::path& path) : UFile(path) {}
+  explicit BmpFile(const char* path) : UFile(path) {}
+  explicit BmpFile(const std::string& path) : UFile(path) {}
+  explicit BmpFile(const fs::path& path) : UFile(path) {}
   ~BmpFile() {}
 };
 

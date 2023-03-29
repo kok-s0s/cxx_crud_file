@@ -1,8 +1,6 @@
 #ifndef INIFILE_HPP_
 #define INIFILE_HPP_
 
-#include <fstream>
-
 #include "UFile.hpp"
 #include "ini/SimpleIni.h"
 
@@ -12,9 +10,9 @@ class IniFile : public UFile {
 
  public:
   IniFile() {}
-  IniFile(const char *path) : UFile(path) {}
-  IniFile(const std::string &path) : UFile(path) {}
-  IniFile(const fs::path &path) : UFile(path) {}
+  explicit IniFile(const char *path) : UFile(path) {}
+  explicit IniFile(const std::string &path) : UFile(path) {}
+  explicit IniFile(const fs::path &path) : UFile(path) {}
   ~IniFile() {}
 
   bool iniSetup() {
@@ -33,9 +31,14 @@ class IniFile : public UFile {
     param = _ini.GetValue(section, key, defaultVal);
   }
 
+  void getFromIni(const std::string &section, const std::string &key,
+                  std::string &param, const char *defaultVal) {
+    getFromIni(section.c_str(), key.c_str(), param, defaultVal);
+  }
+
   template <typename T>
   void getFromIni(const char *section, const char *key, T &param,
-                  T defaultVal) {
+                  const T defaultVal) {
     const char *name = typeid(T).name();
     std::string paramType = name;
     std::string tempParam;
@@ -55,8 +58,14 @@ class IniFile : public UFile {
   }
 
   template <typename T>
-  void getFromIni(const char *section, const char *key, T *param, T *defaultVal,
-                  const int &size) {
+  void getFromIni(const std::string &section, const std::string &key, T &param,
+                  const T defaultVal) {
+    getFromIni(section.c_str(), key.c_str(), param, defaultVal);
+  }
+
+  template <typename T>
+  void getFromIni(const char *section, const char *key, T *param,
+                  const T *defaultVal, const int &size) {
     int index = 0;
 
     const char *name = typeid(T).name();
@@ -89,14 +98,25 @@ class IniFile : public UFile {
     }
   }
 
+  template <typename T>
+  void getFromIni(const std::string &section, const std::string &key, T *param,
+                  const T *defaultVal, const int &size) {
+    getFromIni(section.c_str(), key.c_str(), param, defaultVal, size);
+  }
+
   void setToIni(const char *section, const char *key, const char *fromValue) {
     std::string toValue = fromValue;
     const char *toValueC = (char *)toValue.c_str();
     _ini.SetValue(section, key, toValueC);
   }
 
+  void setToIni(const std::string &section, const std::string &key,
+                const char *fromValue) {
+    setToIni(section.c_str(), key.c_str(), fromValue);
+  }
+
   template <typename T>
-  void setToIni(const char *section, const char *key, T fromValue) {
+  void setToIni(const char *section, const char *key, const T fromValue) {
     const char *name = typeid(T).name();
     std::string valueType = name;
     std::string toValue;
@@ -119,7 +139,13 @@ class IniFile : public UFile {
   }
 
   template <typename T>
-  void setToIni(const char *section, const char *key, T *fromValueArr,
+  void setToIni(const std::string &section, const std::string &key,
+                const T fromValue) {
+    setToIni(section.c_str(), key.c_str(), fromValue);
+  }
+
+  template <typename T>
+  void setToIni(const char *section, const char *key, const T *fromValueArr,
                 const int &size) {
     if (size <= 0) return;
 
@@ -146,6 +172,12 @@ class IniFile : public UFile {
     const char *toValueC = (char *)toValueArr.c_str();
 
     _ini.SetValue(section, key, toValueC);
+  }
+
+  template <typename T>
+  void setToIni(const std::string &section, const std::string &key,
+                const T *fromValueArr, const int &size) {
+    setToIni(section.c_str(), key.c_str(), fromValueArr, size);
   }
 
   void save() {

@@ -5,10 +5,6 @@
 #include <sstream>
 #include <string>
 
-#if defined(_WIN32)
-#pragma warning(disable : 4244)
-#endif
-
 class Variant {
  public:
   using uchar = unsigned char;

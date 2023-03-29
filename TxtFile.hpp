@@ -8,16 +8,21 @@
 class TxtFile : public UFile {
  private:
   std::string _data = "";
-  std::fstream file;
 
  public:
   TxtFile() {}
-  TxtFile(const char* path) : UFile(path) {}
-  TxtFile(const std::string& path) : UFile(path) {}
-  TxtFile(const fs::path& path) : UFile(path) {}
+  explicit TxtFile(const char* path) : UFile(path) {}
+  explicit TxtFile(const std::string& path) : UFile(path) {}
+  explicit TxtFile(const fs::path& path) : UFile(path) {}
   ~TxtFile() {}
 
+  std::string getData() { return _data; }
+
+  void setData(const std::string& data) { _data = data; }
+
   bool readData() {
+    std::fstream file;
+
     file.open(getPath(), std::ios::in);
 
     if (file.is_open()) {
@@ -34,6 +39,8 @@ class TxtFile : public UFile {
   }
 
   bool writeData() {
+    std::fstream file;
+
     file.open(getPath(), std::ios::out);
 
     if (file.is_open()) {
@@ -47,7 +54,9 @@ class TxtFile : public UFile {
     }
   }
 
-  bool appendWriteData(const std::string data) {
+  bool appendWriteData(const std::string& data) {
+    std::fstream file;
+
     file.open(getPath(), std::ios_base::app);
 
     if (file.is_open()) {
@@ -60,10 +69,6 @@ class TxtFile : public UFile {
       return false;
     }
   }
-
-  std::string getData() { return _data; }
-
-  void setData(std::string data) { _data = data; }
 };
 
 #endif  // TXTFILE_HPP_
