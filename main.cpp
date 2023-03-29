@@ -60,13 +60,13 @@ TEST(txt, append_write_data) {
 TEST(ini, ini_setup) {
   IniFile test_01(fs::current_path() / "test_files/test_01.ini");
 
-  EXPECT_TRUE(test_01.iniSetup());
+  EXPECT_TRUE(test_01.setup());
 }
 
 TEST(ini, get_string) {
   IniFile test_01(fs::current_path() / "test_files/test_01.ini");
 
-  EXPECT_TRUE(test_01.iniSetup());
+  EXPECT_TRUE(test_01.setup());
 
   string value_01;
   string value_02;
@@ -87,7 +87,7 @@ TEST(ini, get_string) {
 TEST(ini, get_int) {
   IniFile test_01(fs::current_path() / "test_files/test_01.ini");
 
-  EXPECT_TRUE(test_01.iniSetup());
+  EXPECT_TRUE(test_01.setup());
 
   int value_01;
   int value_02;
@@ -108,7 +108,7 @@ TEST(ini, get_int) {
 TEST(ini, get_float) {
   IniFile test_01(fs::current_path() / "test_files/test_01.ini");
 
-  EXPECT_TRUE(test_01.iniSetup());
+  EXPECT_TRUE(test_01.setup());
 
   float value_01;
   float value_02;
@@ -129,7 +129,7 @@ TEST(ini, get_float) {
 TEST(ini, get_double) {
   IniFile test_01(fs::current_path() / "test_files/test_01.ini");
 
-  EXPECT_TRUE(test_01.iniSetup());
+  EXPECT_TRUE(test_01.setup());
 
   double value_01;
   double value_02;
@@ -150,7 +150,7 @@ TEST(ini, get_double) {
 TEST(ini, get_bool) {
   IniFile test_01(fs::current_path() / "test_files/test_01.ini");
 
-  EXPECT_TRUE(test_01.iniSetup());
+  EXPECT_TRUE(test_01.setup());
 
   bool value_01;
   bool value_02;
@@ -171,7 +171,7 @@ TEST(ini, get_bool) {
 TEST(ini, get_array_int) {
   IniFile test_01(fs::current_path() / "test_files/test_01.ini");
 
-  EXPECT_TRUE(test_01.iniSetup());
+  EXPECT_TRUE(test_01.setup());
 
   int array[8];
   int test_array[] = {81, 71, 61, 51, 41, 31, 21, 11};
@@ -194,7 +194,7 @@ TEST(ini, get_array_int) {
 TEST(ini, get_array_float) {
   IniFile test_01(fs::current_path() / "test_files/test_01.ini");
 
-  EXPECT_TRUE(test_01.iniSetup());
+  EXPECT_TRUE(test_01.setup());
 
   float array[5];
   float test_array[] = {1.1f, 2.1f, 3.1f, 4.1f, 5.1f};
@@ -218,7 +218,7 @@ TEST(ini, get_array_float) {
 TEST(ini, get_array_double) {
   IniFile test_01(fs::current_path() / "test_files/test_01.ini");
 
-  EXPECT_TRUE(test_01.iniSetup());
+  EXPECT_TRUE(test_01.setup());
 
   double array[5];
   double test_array[] = {1.01, 2.01, 3.01, 4.01, 5.01};
@@ -241,7 +241,7 @@ TEST(ini, get_array_double) {
 TEST(ini, get_false_case) {
   IniFile test_03(fs::current_path() / "test_files/no_find.ini");
 
-  EXPECT_FALSE(test_03.iniSetup());
+  EXPECT_FALSE(test_03.setup());
 
   int value_01;
   int value_02;
@@ -256,7 +256,7 @@ TEST(ini, get_false_case) {
 TEST(ini, set_data) {
   IniFile test_02(fs::current_path() / "test_files/test_02.ini");
 
-  if (test_02.iniSetup()) {
+  if (test_02.setup()) {
     test_02.setToIni("string", "str1", "name");
     test_02.setToIni("int", "int1", 22);
     test_02.setToIni("float", "float1", 22.09f);
@@ -270,7 +270,7 @@ TEST(ini, set_data) {
 TEST(ini, set_array_data) {
   IniFile test_02(fs::current_path() / "test_files/test_02.ini");
 
-  if (test_02.iniSetup()) {
+  if (test_02.setup()) {
     int arr_int[] = {2, 3, 4, 5, 6, 1};
     float arr_float[] = {1.01f, 2.01f, 3.01f};
     double arr_double[] = {2.11, 3.11, 1.11};
@@ -290,7 +290,7 @@ TEST(ini, set_array_data) {
 TEST(json, json_setup) {
   JsonFile test(fs::current_path() / "test_files/test.json");
 
-  EXPECT_TRUE(test.jsonSetup());
+  EXPECT_TRUE(test.setup());
 }
 
 TEST(json, get_data) {
@@ -304,7 +304,7 @@ TEST(json, get_data) {
   bool depth_json_value_bool;
   string depth_json_value_string;
 
-  EXPECT_TRUE(test.jsonSetup());
+  EXPECT_TRUE(test.setup());
 
   test.getFromJson("encoding", json_value_string, "kkkkk");
   test.getFromJson("int", json_value_int, 19);
@@ -331,7 +331,7 @@ TEST(json, get_array_string_data) {
   string json_default_value[] = {"java", "c#", "php"};
   int size = 3;
 
-  EXPECT_TRUE(test.jsonSetup());
+  EXPECT_TRUE(test.setup());
   test.getFromJson("plug-ins", json_value, json_default_value, size);
 
   for (int i = 0; i < size; ++i) {
@@ -347,7 +347,7 @@ TEST(json, get_array_int_data) {
   int json_default_value[] = {3, 2, 1};
   int size = 3;
 
-  EXPECT_TRUE(test.jsonSetup());
+  EXPECT_TRUE(test.setup());
   test.getFromJson("indent.int_arr", json_value, json_default_value, size);
 
   for (int i = 0; i < size; ++i) {
@@ -363,7 +363,7 @@ TEST(json, get_array_double_data) {
   double json_default_value[] = {3.11, 2.11, 1.11};
   int size = 3;
 
-  EXPECT_TRUE(test.jsonSetup());
+  EXPECT_TRUE(test.setup());
   test.getFromJson("indent.double_arr", json_value, json_default_value, size);
 
   for (int i = 0; i < size; ++i) {
@@ -386,7 +386,7 @@ TEST(json, get_data_from_Json_false_case) {
   string json_default_value[] = {"java", "c#", "php"};
   int size = 3;
 
-  EXPECT_FALSE(test.jsonSetup());
+  EXPECT_FALSE(test.setup());
 
   test.getFromJson("encoding", json_value_string, "kkkkk");
   test.getFromJson("int", json_value_int, 19);
@@ -444,9 +444,9 @@ TEST(dat, write_data) {
   BinFile test(fs::current_path() / "test_files/test.dat");
 
   if (test.readData()) {
-    BinFile dat_test_copy = test;
-    fs::path copy_p = fs::current_path() / "test_files/dat_test_copy.dat";
-    dat_test_copy.setPath(copy_p);
+    BinFile dat_test_copy(fs::current_path() / "test_files/dat_test_copy.dat");
+
+    dat_test_copy.setData(test.getData());
 
     EXPECT_TRUE(dat_test_copy.writeData());
     EXPECT_EQ(dat_test_copy.getData().size(), 8192);
@@ -458,9 +458,10 @@ TEST(dat, append_write_data) {
   BinFile test(fs::current_path() / "test_files/test.dat");
 
   if (test.readData()) {
-    BinFile dat_test_append = test;
-    fs::path append_p = fs::current_path() / "test_files/dat_test_append.dat";
-    dat_test_append.setPath(append_p);
+    BinFile dat_test_append(fs::current_path() /
+                            "test_files/dat_test_append.dat");
+
+    dat_test_append.setData(test.getData());
 
     EXPECT_TRUE(dat_test_append.writeData());
     EXPECT_EQ(dat_test_append.getData().size(), 8192);
@@ -482,8 +483,8 @@ TEST(bmp, read_data) {
   BmpFile test_01(fs::current_path() / "test_files/test_01.bmp");
   BmpFile test_02(fs::current_path() / "test_files/test_02.bmp");
 
-  BMP bmpObject_01(test_01.getPath().c_str());
-  BMP bmpObject_02(test_02.getPath().c_str());
+  BMP bmpObject_01(test_01.path().c_str());
+  BMP bmpObject_02(test_02.path().c_str());
 
   EXPECT_EQ(bmpObject_01.bmp_info_header.height, 256);
   EXPECT_EQ(bmpObject_01.bmp_info_header.width, 128);
@@ -497,7 +498,7 @@ TEST(bmp, copy_bmp) {
   string copy_bmp_file =
       (fs::current_path() / "test_files/copy_bmp.bmp").string();
 
-  BMP bmpObject(test_01.getPath().c_str());
+  BMP bmpObject(test_01.path().c_str());
   bmpObject.write(copy_bmp_file.c_str());
 
   BMP bmpObject_copy(copy_bmp_file.c_str());
@@ -522,14 +523,12 @@ TEST(img, write_data) {
   BinFile file(fs::current_path() / "test_files/rocket.jpg");
 
   if (file.readData()) {
-    BinFile copy_f = file;
-
-    copy_f.setPath(fs::current_path() / "test_files/rocket_copy.jpg");
+    BinFile copy_f(fs::current_path() / "test_files/rocket_copy.jpg");
     copy_f.setData(file.getData());
     copy_f.setLength(file.getLength());
 
     EXPECT_TRUE(copy_f.writeData());
-    EXPECT_EQ(fs::exists(copy_f.getPath()), true);
+    EXPECT_EQ(fs::exists(copy_f.path()), true);
   }
 }
 
@@ -607,20 +606,12 @@ TEST(variant, type) {
 
 #pragma region file
 
-TEST(file, split) {
-  UFile file;
-  vector<string> a = file.split("a", ".");
-  vector<string> b = file.split("a.b.c", ".");
-  EXPECT_EQ(a.size(), 1);
-  EXPECT_EQ(b.size(), 3);
-}
-
 TEST(file, exist) {
   fs::path path_01 = fs::current_path() / "test_files/test_01.txt";
   fs::path path_02 = fs::current_path() / "test_files/test_10.txt";
 
-  EXPECT_TRUE(fs::exists(UFile(path_01).handle()));
-  EXPECT_FALSE(fs::exists(UFile(path_02).handle()));
+  EXPECT_TRUE(fs::exists(UFile(path_01).path()));
+  EXPECT_FALSE(fs::exists(UFile(path_02).path()));
 }
 
 TEST(file, get_file_size) {
@@ -629,7 +620,7 @@ TEST(file, get_file_size) {
 
   ofstream(p) << "hello world";  // create file of size 1
 
-  EXPECT_EQ(fs::file_size(file.handle()), 11);
+  EXPECT_EQ(fs::file_size(file.path()), 11);
 
   fs::remove(p);
 }
@@ -640,7 +631,7 @@ TEST(file, get_absolute_path) {
 
   ofstream(p) << "hello world";  // create file of size 11
 
-  EXPECT_EQ(fs::absolute(file.handle()), p);
+  EXPECT_EQ(fs::absolute(file.path()), p);
 }
 
 TEST(file, delete_file) {
@@ -649,7 +640,7 @@ TEST(file, delete_file) {
 
   ofstream(p) << "world";
 
-  EXPECT_EQ(fs::file_size(file.handle()), 5);
+  EXPECT_EQ(fs::file_size(file.path()), 5);
 
   EXPECT_TRUE(fs::remove(p));
 }
@@ -680,7 +671,7 @@ TEST(file, if_file_exist_then_find_its_father_directory) {
 TEST(file, false_to_find_its_father_directory_and_then_create_it) {
   string txt = (fs::current_path() / "files_txt/test_01.txt").string();
 
-  EXPECT_NE(fs::remove_all(fs::path(txt).parent_path()), 0);
+  fs::remove_all(fs::path(txt).parent_path());
 
   if (!fs::exists(fs::path(txt).parent_path())) {
     fs::create_directory(fs::path(txt).parent_path());
@@ -777,6 +768,17 @@ TEST(fstream, binary) {
     file.read((char *)data, length * sizeof(char));
     EXPECT_EQ((int)data[0], 169);
   }
+}
+
+#pragma endregion
+
+#pragma region tools
+
+TEST(tools, split) {
+  vector<string> a = split("a", ".");
+  vector<string> b = split("a.b.c", ".");
+  EXPECT_EQ(a.size(), 1);
+  EXPECT_EQ(b.size(), 3);
 }
 
 #pragma endregion

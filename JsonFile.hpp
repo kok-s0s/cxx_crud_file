@@ -10,25 +10,20 @@ class JsonFile : public UFile {
  public:
   json _data;
 
-  JsonFile() {}
-  explicit JsonFile(const char *path) : UFile(path) {}
   explicit JsonFile(const std::string &path) : UFile(path) {}
   explicit JsonFile(const fs::path &path) : UFile(path) {}
   ~JsonFile() {}
 
-  bool jsonSetup() {
-    std::fstream file;
-
-    file.open(getPath(), std::ios::in);
-
-    if (file.is_open()) {
-      file >> _data;
-
-      file.close();
-
-      return true;
-    } else
+  bool setup() {
+    std::ifstream file(path());
+    if (!file) {
       return false;
+    }
+
+    file >> _data;
+
+    file.close();
+    return true;
   }
 
   void getFromJson(const std::string &key, std::string &param,
@@ -123,7 +118,7 @@ class JsonFile : public UFile {
   }
 
   void save() {
-    std::ofstream file(getPath());
+    std::ofstream file(path());
     file << _data;
     file.flush();
   }

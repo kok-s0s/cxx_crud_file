@@ -7,67 +7,47 @@
 
 class TxtFile : public UFile {
  private:
-  std::string _data = "";
+  std::string _data;
 
  public:
-  TxtFile() {}
-  explicit TxtFile(const char* path) : UFile(path) {}
   explicit TxtFile(const std::string& path) : UFile(path) {}
   explicit TxtFile(const fs::path& path) : UFile(path) {}
-  ~TxtFile() {}
 
-  std::string getData() { return _data; }
+  std::string getData() const { return _data; }
 
   void setData(const std::string& data) { _data = data; }
 
   bool readData() {
-    std::fstream file;
-
-    file.open(getPath(), std::ios::in);
-
-    if (file.is_open()) {
-      std::istreambuf_iterator<char> beg(file), end;
-      std::string str(beg, end);
-      _data = str;
-
-      file.close();
-      return true;
-    } else {
-      file.close();
+    std::ifstream file(path());
+    if (!file) {
       return false;
     }
+
+    _data.assign((std::istreambuf_iterator<char>(file)),
+                 std::istreambuf_iterator<char>());
+
+    file.close();
+    return true;
   }
 
   bool writeData() {
-    std::fstream file;
-
-    file.open(getPath(), std::ios::out);
-
-    if (file.is_open()) {
-      file << _data;
-
-      file.close();
-      return true;
-    } else {
-      file.close();
+    std::ofstream file(path());
+    if (!file) {
       return false;
     }
+
+    file << _data;
+    return true;
   }
 
   bool appendWriteData(const std::string& data) {
-    std::fstream file;
-
-    file.open(getPath(), std::ios_base::app);
-
-    if (file.is_open()) {
-      file << data;
-
-      file.close();
-      return true;
-    } else {
-      file.close();
+    std::ofstream file(path(), std::ios_base::app);
+    if (!file) {
       return false;
     }
+
+    file << data;
+    return true;
   }
 };
 
