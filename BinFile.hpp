@@ -60,7 +60,7 @@ class BinFile : public UFile {
     }
 
     _data.insert(_data.end(), data.begin(), data.end());
-    _length = _data.size();
+    _length = (int)_data.size();
 
     file.write((const char *)_data.data(), _length);
 

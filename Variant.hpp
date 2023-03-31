@@ -180,7 +180,7 @@ class Variant {
     if (this == &other) return *this;
     if (String == _d.type || WString == _d.type) {
       if (_d.data.ptr) {
-        delete[](char *) _d.data.ptr;
+        delete[] (char *)_d.data.ptr;
         _d.data.ptr = nullptr;
       }
     }
@@ -447,50 +447,50 @@ class Variant {
     try {
       switch (typeID<T>()) {
         case Bool:
-          return stoi(str);
+          return static_cast<T>(stoi(str));
           break;
         case Char:
-          return stoi(str);
+          return static_cast<T>(stoi(str));
           break;
         case UChar:
-          return stoul(str);
+          return static_cast<T>(stoul(str));
           break;
         case WChar:
-          return stoi(str);
+          return static_cast<T>(stoi(str));
           break;
         case Short:
-          return stoi(str);
+          return static_cast<T>(stoi(str));
           break;
         case UShort:
-          return stoul(str);
+          return static_cast<T>(stoul(str));
           break;
         case Int:
-          return stoi(str);
+          return static_cast<T>(stoi(str));
           break;
         case UInt:
-          return stoul(str);
+          return static_cast<T>(stoul(str));
           break;
         case Long:
-          return stol(str);
+          return static_cast<T>(stol(str));
           break;
         case ULong:
-          return stoul(str);
+          return static_cast<T>(stoul(str));
           break;
         case LongLong:
-          return stoll(str);
+          return static_cast<T>(stoll(str));
           break;
         case ULongLong:
-          return stoull(str);
+          return static_cast<T>(stoull(str));
           ;
           break;
         case Float:
-          return stof(str);
+          return static_cast<T>(stof(str));
           break;
         case Double:
-          return stod(str);
+          return static_cast<T>(stod(str));
           break;
         case LongDouble:
-          return stold(str);
+          return static_cast<T>(stold(str));
           break;
         default:
           break;
@@ -507,50 +507,50 @@ class Variant {
     try {
       switch (typeID<T>()) {
         case Bool:
-          return stoi(wstr);
+          return static_cast<T>(stoi(wstr));
           break;
         case Char:
-          return stoi(wstr);
+          return static_cast<T>(stoi(wstr));
           break;
         case UChar:
-          return stoul(wstr);
+          return static_cast<T>(stoul(wstr));
           break;
         case WChar:
-          return stoi(wstr);
+          return static_cast<T>(stoi(wstr));
           break;
         case Short:
-          return stoi(wstr);
+          return static_cast<T>(stoi(wstr));
           break;
         case UShort:
-          return stoul(wstr);
+          return static_cast<T>(stoul(wstr));
           break;
         case Int:
-          return stoi(wstr);
+          return static_cast<T>(stoi(wstr));
           break;
         case UInt:
-          return stoul(wstr);
+          return static_cast<T>(stoul(wstr));
           break;
         case Long:
-          return stol(wstr);
+          return static_cast<T>(stol(wstr));
           break;
         case ULong:
-          return stoul(wstr);
+          return static_cast<T>(stoul(wstr));
           break;
         case LongLong:
-          return stoll(wstr);
+          return static_cast<T>(stoll(wstr));
           break;
         case ULongLong:
-          return stoull(wstr);
+          return static_cast<T>(stoull(wstr));
           ;
           break;
         case Float:
-          return stof(wstr);
+          return static_cast<T>(stof(wstr));
           break;
         case Double:
-          return stod(wstr);
+          return static_cast<T>(stod(wstr));
           break;
         case LongDouble:
-          return stold(wstr);
+          return static_cast<T>(stold(wstr));
           break;
         default:
           break;
