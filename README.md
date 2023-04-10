@@ -1,4 +1,4 @@
-# cxx_crud_file
+# CXX_CRUD_FILE
 
 ## Development environment
 
