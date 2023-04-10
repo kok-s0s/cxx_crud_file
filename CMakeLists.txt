@@ -13,18 +13,15 @@ FetchContent_Declare(
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 
-enable_testing()
+add_executable(${PROJECT_NAME}
+  main.cpp
+)
 
-add_executable(crud main.cpp)
-
-target_link_libraries(
-  crud
+target_link_libraries(${PROJECT_NAME}
   GTest::gtest_main
 )
 
 include(GoogleTest)
-gtest_discover_tests(crud)
+gtest_discover_tests(${PROJECT_NAME})
 
-set(CPACK_PROJECT_NAME ${PROJECT_NAME})
-set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
-include(CPack)
+enable_testing()
