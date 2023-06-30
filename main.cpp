@@ -541,10 +541,8 @@ TEST(UString, use_string_as_params) {
   string arg_02 = "folder";
   string arg_03 = "cpp";
 
-  string path = UString("C:/home/%1/%2/%3/hello.c")
-                    .args(arg_01)
-                    .args(arg_02)
-                    .args(arg_03);
+  string path =
+      UString("C:/home/%1/%2/%3/hello.c").arg(arg_01).arg(arg_02).arg(arg_03);
 
   EXPECT_EQ(path, "C:/home/test/folder/cpp/hello.c");
 }
@@ -555,7 +553,7 @@ TEST(UString, use_int_as_params) {
   string arg_03 = "text";
 
   string path =
-      UString("C:/home/%1/%2/%3.txt").args(arg_01).args(arg_02).args(arg_03);
+      UString("C:/home/%1/%2/%3.txt").arg(arg_01).arg(arg_02).arg(arg_03);
 
   EXPECT_EQ(path, "C:/home/test/1/text.txt");
 }
@@ -566,7 +564,7 @@ TEST(UString, use_define_variable_as_params) {
 #define HOME "home"
 
   string path = UString("C:/%1/%2/%3/%4/%5.txt")
-                    .args(HOME, arg_01, arg_02, "default", "text");
+                    .arg(HOME, arg_01, arg_02, "default", "text");
 
   EXPECT_EQ(path, "C:/home/test/1/default/text.txt");
 }
@@ -575,7 +573,7 @@ TEST(UString, loop_params) {
   string arg_01 = "test";
   int arg_02 = 1;
 
-  string path = UString("C:/home/%1/%2/%3.txt").args(arg_01, arg_02, "text");
+  string path = UString("C:/home/%1/%2/%3.txt").arg(arg_01, arg_02, "text");
 
   EXPECT_EQ(path, "C:/home/test/1/text.txt");
 }
@@ -584,7 +582,7 @@ TEST(UString, left_value) {
   string arg_01 = "test";
   int arg_02 = 1;
 
-  cout << UString("C:/home/%1/%2/%3.txt").args(arg_01, arg_02, "text") << endl;
+  cout << UString("C:/home/%1/%2/%3.txt").arg(arg_01, arg_02, "text") << endl;
 }
 
 #pragma endregion
