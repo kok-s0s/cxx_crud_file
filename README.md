@@ -1,46 +1,26 @@
-# CXX_CRUD_FILE
+# FileIO Utility Library
 
-## Development environment
+This C++ utility library provides classes for reading and writing various file formats.
 
-**VSCode extensions**
+## Key Classes
 
-- `C/C++`
-- `CMake`
-- `CMake Tools`
-- `clang-format`
-- `Hex Editor`
+| Class    | Description                                    |
+| -------- | ---------------------------------------------- |
+| TxtFile  | Read and write text files.                     |
+| IniFile  | Read and write INI files.                      |
+| JsonFile | Read and write JSON files.                     |
+| BinFile  | Read and write binary files.                   |
+| BmpFile  | Read BMP image files. Copy BMP files.          |
+| UString  | String formatting utility.                     |
+| Variant  | Holds various data types in a single variable. |
 
-## Test-Driven Development (TDD)
+## Usage
 
-[GoogleTest](http://google.github.io/googletest/quickstart-cmake.html)
+1. Include the necessary headers.
+2. Instantiate the desired file class.
+3. Use provided methods for file operations.
+4. Optionally, use additional tools like `UString` or `Variant`.
 
-## Project structure
+## Testing
 
-### Source code
-
-- [Tools.hpp](./Tools.hpp)
-- [UFile.hpp](./UFile.hpp)
-  - [BinFile.hpp](./BinFile.hpp)
-  - [BmpFile.hpp](./BmpFile.hpp)
-    - [BMP.h](./bmp/BMP.h)
-  - [IniFile.hpp](./IniFile.hpp)
-    - [SimpleIni.h](./ini/SimpleIni.h)
-  - [JsonFile.hpp](./JsonFile.hpp)
-    - [json.hpp](./json/json.hpp)
-  - [TxtFile.hpp](./TxtFile.hpp)
-- [UString.hpp](./UString.hpp)
-- [Variant.hpp](./Variant.hpp)
-
-### Test
-
-- [main.cpp](./main.cpp)
-- [test_files](./test_files)
-
-### Other
-
-- [.clang-format](./.clang-format)
-- [CMakeLists.txt](./CMakeLists.txt)
-
-## Static C/C++ Code Analysis
-
-[CppCheck](http://cppcheck.sourceforge.net/)
+Google Test framework is used for testing to ensure the correct functionality of each file type and utility.

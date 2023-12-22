@@ -39,11 +39,13 @@ class IniFile : public UFile {
       param = static_cast<T>(stof(tempParam));
     else if (paramType[0] == 'd')
       param = static_cast<T>(stod(tempParam));
-    else if (paramType[0] == 'b')
-      if (tempParam == "false" || tempParam == "0")
+    else if (paramType[0] == 'b') {
+      if (tempParam == "false" || tempParam == "0") {
         param = false;
-      else if (tempParam == "true" || tempParam == "1")
+      } else if (tempParam == "true" || tempParam == "1") {
         param = true;
+      }
+    }
   }
 
   template <typename T>
@@ -98,11 +100,13 @@ class IniFile : public UFile {
       toValue = std::to_string(fromValue);
     else if (valueType[0] == 'd')
       toValue = std::to_string(fromValue);
-    else if (valueType[0] == 'b')
-      if ((bool)fromValue == false)
+    else if (valueType[0] == 'b') {
+      if ((bool)fromValue == false) {
         toValue = "false";
-      else if ((bool)fromValue == true)
+      } else if ((bool)fromValue == true) {
         toValue = "true";
+      }
+    }
 
     _ini.SetValue(section.c_str(), key.c_str(), toValue.c_str());
   }

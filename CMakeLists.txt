@@ -13,8 +13,12 @@ FetchContent_Declare(
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 
+include_directories(
+  ${CMAKE_SOURCE_DIR}/src
+)
+
 add_executable(${PROJECT_NAME}
-  main.cpp
+  ${CMAKE_SOURCE_DIR}/src/main.cpp
 )
 
 target_link_libraries(${PROJECT_NAME}
